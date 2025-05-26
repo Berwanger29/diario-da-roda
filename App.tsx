@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts, Manrope_700Bold } from '@expo-google-fonts/manrope';
+import { WorkSans_500Medium, WorkSans_400Regular, WorkSans_300Light } from '@expo-google-fonts/work-sans'
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { Navigator } from './src/navigation/Navigator';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import 'react-native-gesture-handler';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+
+  const [loaded, error] = useFonts({
+    Manrope_700Bold,
+    WorkSans_500Medium,
+    WorkSans_400Regular,
+    WorkSans_300Light
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <Navigator />
+    </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
