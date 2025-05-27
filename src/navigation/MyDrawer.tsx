@@ -10,6 +10,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { NewVehicle } from '../screens/NewVehicle';
+import { DefaultIcon } from '../components/DefaultIcon';
 
 const Drawer = createDrawerNavigator();
 
@@ -207,11 +208,11 @@ export function MyDrawer() {
   function switchIcon(vehicleType: string, color: string) {
     switch (vehicleType) {
       case 'car':
-        return <FontAwesome5 name="car" size={24} color={color} />;
+        return <DefaultIcon name='Car'/>;
       case 'motorcycle':
-        return <FontAwesome5 name="motorcycle" size={24} color={color} />;
+        return <DefaultIcon name='Motorcycle' />;
       case 'truck':
-        return <FontAwesome5 name="truck" size={24} color={color} />;
+        return <DefaultIcon name='Truck' />;
       default:
         return <FontAwesome5 name="car" size={24} color={color} />;
     }
@@ -240,7 +241,7 @@ export function MyDrawer() {
         options={{
           drawerLabel: 'Conta',
           drawerIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" color={color} size={24} />
+            <DefaultIcon name='UserCircle' color={color} size={24} />
           ),
         }}
       />
@@ -267,7 +268,7 @@ export function MyDrawer() {
         options={{
           drawerLabel: 'Novo Veículo',
           drawerIcon: ({ color }) => (
-            <FontAwesome name="plus-circle" size={24} color={color} />
+            <DefaultIcon name='PlusCircle' color={color} size={24} />
           ),
         }}
       />
@@ -278,7 +279,7 @@ export function MyDrawer() {
         options={{
           drawerLabel: 'Configurações',
           drawerIcon: ({ color }) => (
-            <Ionicons name="settings" size={24} color={color} />
+            <DefaultIcon name='Gear' color={color} size={24} />
           ),
         }}
       />

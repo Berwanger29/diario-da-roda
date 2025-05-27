@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import { Navigator } from './src/navigation/Navigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-gesture-handler';
+import { IconContext } from 'phosphor-react-native';
+import theme from './src/theme/theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,7 +31,15 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <Navigator />
+      <IconContext.Provider
+        value={{
+          size:24,
+          weight: 'fill',
+          color: theme.COLORS.LIGHT_400
+        }}
+      >
+        <Navigator />
+      </IconContext.Provider>
     </SafeAreaProvider>
   );
 }

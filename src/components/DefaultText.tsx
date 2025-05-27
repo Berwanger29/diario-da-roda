@@ -3,9 +3,9 @@ import theme from "../theme/theme";
 
 type Props = TextProps & {
     text: string;
-    weight?: "BOLD" | "MEDIUM" | "REGULAR" | "LIGHT";
-    color?: "PRIMARY" | "LIGHT" | "LIGHT_400" | "DARK" | "DARK_100";
-    fontSize?: keyof typeof theme.FONT_SIZE;
+    weight?: keyof typeof theme["FONTS"];
+    color?: keyof typeof theme["COLORS"];
+    fontSize?: keyof typeof theme["FONT_SIZE"];
     size?: number;
 }
 
@@ -17,7 +17,7 @@ export function DefaultText({ text, weight, fontSize, color, ...rest }: Props) {
                 fontSize: fontSize ? theme.FONT_SIZE[fontSize] : theme.FONT_SIZE.M,
                 color: color ? theme.COLORS[color] : theme.COLORS.LIGHT,
             }, rest.style]}
-            
+
         >
             {text}
         </Text>
