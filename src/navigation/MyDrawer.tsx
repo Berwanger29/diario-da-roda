@@ -5,219 +5,96 @@ import { VehicleNotes } from '../screens/VehicleNotes';
 
 
 import theme from '../theme/theme';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { NewVehicle } from '../screens/NewVehicle';
 import { DefaultIcon } from '../components/DefaultIcon';
+import { storage } from '../storage/mmkvStorage';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { VehicleTypes } from '../@types/vehicleTypes';
+import { useFocusEffect } from '@react-navigation/native';
+
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { VehiclesContext } from '../contexts/appContext';
+
 
 const Drawer = createDrawerNavigator();
 
-const vehicles = [
-  {
-    id: 1,
-    type: 'car',
-    brand: 'Chevrolet',
-    model: 'Onix',
-    year: 2020,
-    color: 'black',
-    plate: 'ABC1D23',
-    mileage: 20000,
-    insurance: {
-      company: 'Bradesco',
-      policyNumber: '123456789',
-      expirationDate: '2023-12-31',
-      coverage: 'full',
-      premium: 2000,
-      deductible: 1000,
-      claims: [
-        {
-          date: '2023-01-01',
-          amount: 500,
-          description: 'Accident',
-          status: 'approved',
-        },
-        {
-          date: '2023-06-01',
-          amount: 1000,
-          description: 'Theft',
-          status: 'pending',
-        },
-      ],
-    },
-    maintenance: [
-      {
-        date: '2023-01-01',
-        type: 'oil change',
-        cost: 100,
-        description: 'Changed oil and filter',
-      },
-      {
-        date: '2023-06-01',
-        type: 'tire rotation',
-        cost: 50,
-        description: 'Rotated tires',
-      },
-    ],
-    documents: [
-      {
-        type: 'registration',
-        number: '123456789',
-        expirationDate: '2023-12-31',
-        status: 'valid',
-      },
-      {
-        type: 'insurance',
-        number: '987654321',
-        expirationDate: '2023-12-31',
-        status: 'valid',
-      },
-      {
-        type: 'inspection',
-        number: '456789123',
-        expirationDate: '2023-12-31',
-        status: 'valid',
-      },
-    ],
-    notes: [
-      {
-        date: '2023-01-01',
-        note: 'First oil change at 10,000 km',
-      },
-      {
-        date: '2023-06-01',
-        note: 'Tire rotation at 20,000 km',
-      },
-    ],
-    images: [
-      {
-        id: 1,
-        url: 'https://example.com/image1.jpg',
-        description: 'Front view',
-      },
-      {
-        id: 2,
-        url: 'https://example.com/image2.jpg',
-        description: 'Rear view',
-      },
-      {
-        id: 3,
-        url: 'https://example.com/image3.jpg',
-        description: 'Side view',
-      }
-    ]
-  },
-  {
-    id: 2,
-    type: 'motorcycle',
-    brand: 'Honda',
-    model: 'CB500F',
-    year: 2020,
-    color: 'black',
-    plate: 'ABC1D23',
-    mileage: 20000,
-    insurance: {
-      company: 'Bradesco',
-      policyNumber: '123456789',
-      expirationDate: '2023-12-31',
-      coverage: 'full',
-      premium: 2000,
-      deductible: 1000,
-      claims: [
-        {
-          date: '2023-01-01',
-          amount: 500,
-          description: 'Accident',
-          status: 'approved',
-        },
-        {
-          date: '2023-06-01',
-          amount: 1000,
-          description: 'Theft',
-          status: 'pending',
-        },
-      ],
-    },
-    maintenance: [
-      {
-        date: '2023-01-01',
-        type: 'oil change',
-        cost: 100,
-        description: 'Changed oil and filter',
-      },
-      {
-        date: '2023-06-01',
-        type: 'tire rotation',
-        cost: 50,
-        description: 'Rotated tires',
-      },
-    ],
-    documents: [
-      {
-        type: 'registration',
-        number: '123456789',
-        expirationDate: '2023-12-31',
-        status: 'valid',
-      },
-      {
-        type: 'insurance',
-        number: '987654321',
-        expirationDate: '2023-12-31',
-        status: 'valid',
-      },
-      {
-        type: 'inspection',
-        number: '456789123',
-        expirationDate: '2023-12-31',
-        status: 'valid',
-      },
-    ],
-    notes: [
-      {
-        date: '2023-01-01',
-        note: 'First oil change at 10,000 km',
-      },
-      {
-        date: '2023-06-01',
-        note: 'Tire rotation at 20,000 km',
-      },
-    ],
-    images: [
-      {
-        id: 1,
-        url: 'https://example.com/image1.jpg',
-        description: 'Front view',
-      },
-      {
-        id: 2,
-        url: 'https://example.com/image2.jpg',
-        description: 'Rear view',
-      },
-      {
-        id: 3,
-        url: 'https://example.com/image3.jpg',
-        description: 'Side view',
-      }
-    ]
-  }
-]
+
+
 
 export function MyDrawer() {
 
-  function switchIcon(vehicleType: string, color: string) {
+  const { vehicles } = useContext(VehiclesContext)
+
+  // const route = useRoute();
+  // const navigation = useNavigation();
+
+  // const [vehicles, setVehicles] = useState<VehicleProps[]>([])
+
+  // let vehicles = [
+  //   {
+  //     id: '1',
+  //     vehicleNickname: 'Volks',
+  //     vehicleType: 'cars'
+  //   },
+  //   {
+  //     id: '2',
+  //     vehicleNickname: 'Fusca',
+  //     vehicleType: 'trucks'
+  //   }
+  // ]
+
+
+  function switchIcon(vehicleType: VehicleTypes, color: string) {
     switch (vehicleType) {
-      case 'car':
-        return <DefaultIcon name='Car'/>;
-      case 'motorcycle':
+      case 'cars':
+        return <DefaultIcon name='Car' />;
+      case 'motorcycles':
         return <DefaultIcon name='Motorcycle' />;
-      case 'truck':
+      case 'trucks':
         return <DefaultIcon name='Truck' />;
       default:
         return <FontAwesome5 name="car" size={24} color={color} />;
     }
-
   }
+
+  // function getVehicleNames() {
+  //   const vehiclesListRaw = storage.getString('vehicles')
+  //   const vehiclesList = vehiclesListRaw ? JSON.parse(vehiclesListRaw) : []
+
+  //   setVehicles(vehiclesList)
+  // }
+
+  // function getVehicleNames() {
+  //   const vehiclesListRaw = storage.getString('vehicles');
+  //   const vehicleIds = vehiclesListRaw ? JSON.parse(vehiclesListRaw) : [];
+
+  //   const vehiclesList = vehicleIds
+  //     .map((id: string) => {
+  //       const vehicleRaw = storage.getString(`vehicle.${id}`);
+  //       return vehicleRaw ? JSON.parse(vehicleRaw) : null;
+  //     })
+  //     .filter((vehicle: VehicleProps | null) => vehicle && vehicle.id && vehicle.vehicleNickname);
+
+  //   setVehicles(vehiclesList);
+  // }
+
+
+  // useEffect(() => {
+  //   const vehicleId = (route as any)?.params?.redirectToVehicleId;
+  //   if (vehicleId && vehicles.find(v => v.id === vehicleId)) {
+  //     navigation.navigate(`VehicleNotes_${vehicleId}`);
+  //   }
+  // }, [route, vehicles]);
+
+
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getVehicleNames();
+  //   }, [])
+  // );
+
   return (
     <Drawer.Navigator
       initialRouteName='Account'
@@ -250,13 +127,12 @@ export function MyDrawer() {
         vehicles.map((vehicle) => (
           <Drawer.Screen
             key={vehicle.id}
-            name={`${vehicle.model}`}
+            name={`VehicleNotes_${vehicle.id}`}
             component={VehicleNotes}
+            initialParams={{ vehicleId: vehicle.id }}
             options={{
-              drawerLabel: vehicle.model,
-              drawerIcon: ({ color }) => (
-                switchIcon(vehicle.type, color)
-              ),
+              drawerLabel: vehicle.vehicleNickname,
+              drawerIcon: ({ color }) => switchIcon(vehicle.vehicleType as VehicleTypes, color),
             }}
           />
         ))

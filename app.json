@@ -39,6 +39,12 @@
         }
       ],
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que o app Dirário da Roda acesse suas imagens ?"
+        }
+      ],
+      [
         "react-native-google-mobile-ads",
         {
           "userTrackingUsageDescription": "Este identificador é utilizado para fornecer anúncios personalizados com base em seus interesses.",

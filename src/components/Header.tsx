@@ -8,9 +8,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 type Props = {
     title: string;
     hasFilter?: boolean;
+    showDrawerMenuIcon?: boolean
 }
 
-export function Header({ title, hasFilter }: Props) {
+export function Header({ title, hasFilter, showDrawerMenuIcon = true }: Props) {
 
     const navigation = useNavigation();
 
@@ -22,21 +23,24 @@ export function Header({ title, hasFilter }: Props) {
         <View
             style={styles.continer}
         >
-            <Pressable
-                style={styles.icon}
-                onPress={handleToggleDrawer}
-            >
-                <FontAwesome6
-                    name="bars-staggered"
-                    size={24}
-                    color={theme.COLORS.LIGHT_400}
-                />
-            </Pressable>
+            {
+                showDrawerMenuIcon && <Pressable
+                    style={styles.icon}
+                    onPress={handleToggleDrawer}
+                >
+                    <FontAwesome6
+                        name="bars-staggered"
+                        size={24}
+                        color={theme.COLORS.LIGHT_400}
+                    />
+                </Pressable>
+            }
             <DefaultText
                 text={title}
                 weight="BOLD"
                 fontSize="XL"
                 color="LIGHT"
+                ellipsizeMode="tail"
             />
             {
                 hasFilter &&

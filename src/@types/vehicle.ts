@@ -1,14 +1,13 @@
+import { InputImageProps } from "../screens/NewVehicle";
+import { IconName } from "./iconName";
 import { VehicleNote } from "./vehicleNote";
+import { VehicleTypes } from "./vehicleTypes";
 
 
-type Vehicle = {
+export type Vehicle = {
     id: string;
-    name: string;
-    brand: string;
-    model: string;
-    year: number;
-    mileage: number;
-    power: number;
-    image: string;
+    type: VehicleTypes
+    vehicleNickname: string;
+    image: InputImageProps;
     notes:VehicleNote[]
 }

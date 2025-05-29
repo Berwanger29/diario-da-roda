@@ -3,9 +3,13 @@ export declare global {
     interface RootParamList {
       Login: undefined;
       Account: undefined;
-      MyDrawer: undefined;
+      MyDrawer: {
+        screen?:string
+      };
       NewVehicle: undefined;
-      VehicleNotes: undefined;
+      VehicleNotes: {
+        vehicleId: string
+      };
       FormVehicle: undefined;
       Vehicle: undefined;
       Note: undefined;

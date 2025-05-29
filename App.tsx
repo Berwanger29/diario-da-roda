@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-gesture-handler';
 import { IconContext } from 'phosphor-react-native';
 import theme from './src/theme/theme';
+import { VehiclesProvider } from './src/contexts/appContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,15 +32,17 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <IconContext.Provider
-        value={{
-          size:24,
-          weight: 'fill',
-          color: theme.COLORS.LIGHT_400
-        }}
-      >
-        <Navigator />
-      </IconContext.Provider>
+      <VehiclesProvider>
+        <IconContext.Provider
+          value={{
+            size: 24,
+            weight: 'fill',
+            color: theme.COLORS.LIGHT_400
+          }}
+        >
+          <Navigator />
+        </IconContext.Provider>
+      </VehiclesProvider>
     </SafeAreaProvider>
   );
 }
