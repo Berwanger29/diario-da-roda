@@ -4,15 +4,18 @@ import uuid from 'react-native-uuid';
 import { Vehicle } from "../@types/vehicle";
 import { InputImageProps } from "../screens/NewVehicle";
 import { VehicleTypes } from "../@types/vehicleTypes";
+import { VehicleNote } from "../@types/vehicleNote";
 
-// Definir a tipagem do contexto
+
 export type VehiclesContextType = {
     vehicles: Vehicle[];
     handleSaveVehicle: (type: VehicleTypes, image: InputImageProps, nickname: string) => void;
     retrieveVehicles: () => void;
     findById: (vehicleId: string) => Vehicle | null;
-    deleteAllVehicles: () => void; // Nova função adicionada
+    deleteAllVehicles: () => void;
+    addNoteToVehicle: (vehicleId: string, note: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>) => void;
 };
+
 
 
 const defaultContext: VehiclesContextType = {
@@ -29,7 +32,11 @@ const defaultContext: VehiclesContextType = {
     },
     deleteAllVehicles: () => {
         console.warn('deleteAllVehicles called without provider; this is a no-op.');
-    }
+    },
+    addNoteToVehicle: () => {
+        console.warn('addNoteToVehicle called without provider; this is a no-op.');
+    },
+
 };
 
 
@@ -101,6 +108,37 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         console.log("Todos os registros foram deletados.");
     }, []);
 
+    const addNoteToVehicle = useCallback((
+        vehicleId: string,
+        noteData: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>
+    ) => {
+        const vehicleRaw = storage.getString(`vehicle.${vehicleId}`);
+        if (!vehicleRaw) {
+            console.error("Veículo não encontrado.");
+            return;
+        }
+
+        const vehicle: Vehicle = JSON.parse(vehicleRaw);
+
+        const newNote: VehicleNote = {
+            id: uuid.v4() as string,
+            vehicleId,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            ...noteData,
+        };
+
+        vehicle.notes.push(newNote);
+
+        storage.set(`vehicle.${vehicleId}`, JSON.stringify(vehicle));
+
+        setVehicles((prevVehicles) =>
+            prevVehicles.map((v) => (v.id === vehicleId ? { ...v, notes: [...v.notes, newNote] } : v))
+        );
+
+        console.log(`Nota adicionada ao veículo ${vehicleId}:`, newNote);
+    }, []);
+
 
 
     useEffect(() => {
@@ -123,7 +161,14 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
 
 
     return (
-        <VehiclesContext.Provider value={{ vehicles, handleSaveVehicle, retrieveVehicles, findById, deleteAllVehicles }}>
+        <VehiclesContext.Provider value={{
+            vehicles,
+            handleSaveVehicle,
+            retrieveVehicles,
+            findById,
+            deleteAllVehicles,
+            addNoteToVehicle
+        }}>
             {children}
         </VehiclesContext.Provider>
     );

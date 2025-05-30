@@ -1,6 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "../components/Header";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { DefaultText } from "../components/DefaultText";
 import theme from "../theme/theme";
 import { AddButton } from "../components/Addbutton";
@@ -12,9 +12,10 @@ import { useCallback, useContext, useState } from "react";
 import { Vehicle } from "../@types/vehicle";
 import { VehiclesContext } from "../contexts/appContext";
 import { DefaultLoading } from "../components/DefaultLoading";
+import { EmptyList } from "../components/EmptyList";
 
 interface RouteParams {
-  vehicleId: string;
+    vehicleId: string;
 }
 
 
@@ -22,16 +23,14 @@ export function VehicleNotes() {
     const route = useRoute();
     const { vehicleId } = route.params as RouteParams;
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
-    const { findById } = useContext(VehiclesContext);
+    const { findById, addNoteToVehicle } = useContext(VehiclesContext);
 
     function getVehicle() {
         const res = findById(vehicleId);
         setVehicleState(res);
-        console.log(res)
     }
 
     useFocusEffect(useCallback(() => {
-        console.log("id do veículo -> ", vehicleId)
         getVehicle();
     }, []));
 
@@ -48,8 +47,12 @@ export function VehicleNotes() {
             <ScrollView
                 style={styles.container}
                 contentContainerStyle={styles.scrollViewContentContainer}
+                nestedScrollEnabled={true}
+                showsVerticalScrollIndicator={false}
             >
-                <CardCarInfo />
+                <CardCarInfo
+                    imageUri={vehicleState.image.uri}
+                />
                 <DefaultText
                     text="Anúncio"
                     fontSize="S"
@@ -65,13 +68,23 @@ export function VehicleNotes() {
                     color="LIGHT_400"
                     style={{ alignSelf: "center" }}
                 />
-                <CardNote />
-                <CardNote />
-                <CardNote />
-                <CardNote />
+                <FlatList
+                    data={vehicleState.notes}
+                    renderItem={({ item }) => <CardNote
+                        title={item.title}
+                        description={item.description}
+                        price={item.price}
+                        date={item.createdAt}
+                    />}
+                    scrollEnabled={false}
+                    style={styles.flatListContainer}
+                    contentContainerStyle={styles.flatListContentContainer}
+                    ListEmptyComponent={() => <EmptyList />}
+                />
             </ScrollView>
-
-            <AddButton />
+            <AddButton
+                vehicledId={vehicleState.id}
+            />
         </SafeAreaView>
     );
 }
@@ -87,6 +100,13 @@ const styles = StyleSheet.create({
         padding: theme.MEASURES.PADDING,
     },
     scrollViewContentContainer: {
+        gap: 15,
+        paddingBottom: 100
+    },
+    flatListContainer: {
+        flex: 1,
+    },
+    flatListContentContainer: {
         gap: 15
     }
 })

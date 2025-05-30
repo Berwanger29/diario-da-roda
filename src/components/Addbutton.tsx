@@ -3,8 +3,11 @@ import theme from "../theme/theme";
 import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from "@react-navigation/native";
 
+type Props = {
+    vehicledId: string
+}
 
-export function AddButton() {
+export function AddButton({ vehicledId }: Props) {
 
     const navigation = useNavigation();
 
@@ -12,7 +15,9 @@ export function AddButton() {
 
     return (
         <Pressable
-            onPress={() => navigation.navigate("FormVehicle")}
+            onPress={() => navigation.navigate("FormVehicle", {
+                vehicleId: vehicledId
+            })}
             style={{
                 width: circleDimensions,
                 height: circleDimensions,

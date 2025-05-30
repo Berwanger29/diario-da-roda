@@ -4,14 +4,16 @@ import { DefaultText } from "./DefaultText";
 import { Image } from "expo-image";
 import { useNavigation } from "@react-navigation/native";
 import image from "../assets/onix_1.png";
+import { InputImageProps } from "../screens/NewVehicle";
 
-export function CardCarInfo() {
+type Props = {
+    imageUri: InputImageProps["uri"];
+}
+
+export function CardCarInfo({ imageUri }: Props) {
 
     const blurHash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
-    
-
     const navigation = useNavigation();
-
 
     return (
         <TouchableOpacity
@@ -23,7 +25,7 @@ export function CardCarInfo() {
                 style={styles.imageContiner}
             >
                 <Image
-                    source={image}
+                    source={imageUri}
                     placeholder={blurHash}
                     style={styles.image}
                 />

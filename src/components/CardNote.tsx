@@ -3,6 +3,7 @@ import theme from "../theme/theme";
 import { DefaultText } from "./DefaultText";
 import { CardNoteImagePreview } from "./CardNoteImagePreview";
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 
 //Título
 //Descrição
@@ -10,11 +11,18 @@ import { useNavigation } from "@react-navigation/native";
 //Valor
 //Data
 
-export function CardNote() {
+type Props = {
+    title: string;
+    description: string;
+    price?: number | null | undefined;
+    date: Date
+}
+
+export function CardNote({ description, price, title, date }: Props) {
 
     const navigation = useNavigation()
 
-    function handleNavigateToNoteScreen(){
+    function handleNavigateToNoteScreen() {
         navigation.navigate("Note")
     }
 
@@ -25,34 +33,51 @@ export function CardNote() {
             onPress={handleNavigateToNoteScreen}
         >
             <DefaultText
-                text="Lorem ipsum dolor sit amet"
+                text={title}
                 fontSize="L"
                 weight="MEDIUM"
             />
             <DefaultText
-                text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                text={description}
                 color="LIGHT_400"
             />
-            <View
+
+            {/* IMAGENS */}
+            {/* <View
                 style={styles.imagePreview}
             >
                 <CardNoteImagePreview />
                 <CardNoteImagePreview />
                 <CardNoteImagePreview />
                 <CardNoteImagePreview />
-            </View>
+            </View> */}
+
             <View
                 style={styles.footer}
             >
-                <DefaultText
-                    text="R$ 100,00"
-                    fontSize="L"
-                    weight="BOLD"
-                />
-                <DefaultText
-                    text="12/12/2023"
-                    color="LIGHT_400"
-                />
+                {
+                    price ?
+                        <DefaultText
+                            text={String(price)}
+                            fontSize="L"
+                            weight="BOLD"
+                        />
+                        :
+                        <DefaultText
+                            text=""
+                        />
+                }
+                {
+                    date ?
+                        <DefaultText
+                            text={String(moment(date).format('L'))}
+                            color="LIGHT_400"
+                        />
+                        :
+                        <DefaultText
+                            text=""
+                        />
+                }
             </View>
         </TouchableOpacity>
     )
@@ -60,9 +85,11 @@ export function CardNote() {
 
 const styles = StyleSheet.create({
     container: {
+
         backgroundColor: theme.COLORS.DARK_100,
         borderRadius: theme.MEASURES.BORDER_RADIUS,
         padding: theme.MEASURES.PADDING,
+
         gap: 12,
     },
     imagePreview: {
@@ -73,6 +100,7 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     footer: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
