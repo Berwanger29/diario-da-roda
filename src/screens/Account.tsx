@@ -4,12 +4,16 @@ import { DefaultText } from "../components/DefaultText";
 import { Header } from "../components/Header";
 import { DefaultButton } from "../components/DefaultButton";
 import { storage } from "../storage/mmkvStorage";
+import { useContext } from "react";
+import { VehiclesContext } from "../contexts/appContext";
 
 
 export function Account() {
 
+    const {deleteAllVehicles} = useContext(VehiclesContext)
+
     function handleDeleteAllVehicles(){
-        storage.clearAll()
+        deleteAllVehicles()
         console.log('deletado')
     }
 

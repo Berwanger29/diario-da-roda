@@ -113,6 +113,7 @@ export function NewVehicle() {
 
     function handleFinish() {
         handleSaveVehicle(vehicleType!, selectedImage!, vehicleNickname)
+        
     }
 
     useEffect(() => {

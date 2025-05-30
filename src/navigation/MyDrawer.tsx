@@ -26,25 +26,6 @@ export function MyDrawer() {
 
   const { vehicles } = useContext(VehiclesContext)
 
-  // const route = useRoute();
-  // const navigation = useNavigation();
-
-  // const [vehicles, setVehicles] = useState<VehicleProps[]>([])
-
-  // let vehicles = [
-  //   {
-  //     id: '1',
-  //     vehicleNickname: 'Volks',
-  //     vehicleType: 'cars'
-  //   },
-  //   {
-  //     id: '2',
-  //     vehicleNickname: 'Fusca',
-  //     vehicleType: 'trucks'
-  //   }
-  // ]
-
-
   function switchIcon(vehicleType: VehicleTypes, color: string) {
     switch (vehicleType) {
       case 'cars':
@@ -57,43 +38,6 @@ export function MyDrawer() {
         return <FontAwesome5 name="car" size={24} color={color} />;
     }
   }
-
-  // function getVehicleNames() {
-  //   const vehiclesListRaw = storage.getString('vehicles')
-  //   const vehiclesList = vehiclesListRaw ? JSON.parse(vehiclesListRaw) : []
-
-  //   setVehicles(vehiclesList)
-  // }
-
-  // function getVehicleNames() {
-  //   const vehiclesListRaw = storage.getString('vehicles');
-  //   const vehicleIds = vehiclesListRaw ? JSON.parse(vehiclesListRaw) : [];
-
-  //   const vehiclesList = vehicleIds
-  //     .map((id: string) => {
-  //       const vehicleRaw = storage.getString(`vehicle.${id}`);
-  //       return vehicleRaw ? JSON.parse(vehicleRaw) : null;
-  //     })
-  //     .filter((vehicle: VehicleProps | null) => vehicle && vehicle.id && vehicle.vehicleNickname);
-
-  //   setVehicles(vehiclesList);
-  // }
-
-
-  // useEffect(() => {
-  //   const vehicleId = (route as any)?.params?.redirectToVehicleId;
-  //   if (vehicleId && vehicles.find(v => v.id === vehicleId)) {
-  //     navigation.navigate(`VehicleNotes_${vehicleId}`);
-  //   }
-  // }, [route, vehicles]);
-
-
-
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getVehicleNames();
-  //   }, [])
-  // );
 
   return (
     <Drawer.Navigator
@@ -132,7 +76,7 @@ export function MyDrawer() {
             initialParams={{ vehicleId: vehicle.id }}
             options={{
               drawerLabel: vehicle.vehicleNickname,
-              drawerIcon: ({ color }) => switchIcon(vehicle.vehicleType as VehicleTypes, color),
+              drawerIcon: ({ color }) => switchIcon(vehicle.type as VehicleTypes, color),
             }}
           />
         ))

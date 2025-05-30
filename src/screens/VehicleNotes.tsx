@@ -4,22 +4,45 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { DefaultText } from "../components/DefaultText";
 import theme from "../theme/theme";
 import { AddButton } from "../components/Addbutton";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { CardNote } from "../components/CardNote";
 import { CardCarInfo } from "../components/CardCarInfo";
 import { CardAdBanner } from "../components/CardAdBanner";
+import { useCallback, useContext, useState } from "react";
+import { Vehicle } from "../@types/vehicle";
+import { VehiclesContext } from "../contexts/appContext";
+import { DefaultLoading } from "../components/DefaultLoading";
+
+interface RouteParams {
+  vehicleId: string;
+}
 
 
 export function VehicleNotes() {
-
     const route = useRoute();
+    const { vehicleId } = route.params as RouteParams;
+    const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
+    const { findById } = useContext(VehiclesContext);
+
+    function getVehicle() {
+        const res = findById(vehicleId);
+        setVehicleState(res);
+        console.log(res)
+    }
+
+    useFocusEffect(useCallback(() => {
+        console.log("id do veículo -> ", vehicleId)
+        getVehicle();
+    }, []));
+
+    if (!vehicleState) {
+        return <DefaultLoading />;
+    }
 
     return (
-        <SafeAreaView
-            style={styles.safeAreaView}
-        >
+        <SafeAreaView style={styles.safeAreaView}>
             <Header
-                title={route.name}
+                title={vehicleState?.vehicleNickname}
                 hasFilter
             />
             <ScrollView
@@ -32,9 +55,7 @@ export function VehicleNotes() {
                     fontSize="S"
                     weight="LIGHT"
                     color="LIGHT_400"
-                    style={{
-                        alignSelf: "center",
-                    }}
+                    style={{ alignSelf: "center" }}
                 />
                 <CardAdBanner />
                 <DefaultText
@@ -42,9 +63,7 @@ export function VehicleNotes() {
                     fontSize="S"
                     weight="LIGHT"
                     color="LIGHT_400"
-                    style={{
-                        alignSelf: "center",
-                    }}
+                    style={{ alignSelf: "center" }}
                 />
                 <CardNote />
                 <CardNote />
@@ -53,10 +72,10 @@ export function VehicleNotes() {
             </ScrollView>
 
             <AddButton />
-
         </SafeAreaView>
-    )
+    );
 }
+
 
 const styles = StyleSheet.create({
     safeAreaView: {

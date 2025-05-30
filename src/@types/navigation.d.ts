@@ -10,6 +10,7 @@ export declare global {
       VehicleNotes: {
         vehicleId: string
       };
+      
       FormVehicle: undefined;
       Vehicle: undefined;
       Note: undefined;
