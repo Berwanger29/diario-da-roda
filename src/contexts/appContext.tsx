@@ -14,6 +14,8 @@ export type VehiclesContextType = {
     findById: (vehicleId: string) => Vehicle | null;
     deleteAllVehicles: () => void;
     addNoteToVehicle: (vehicleId: string, note: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>) => void;
+    findNoteById: (vehicleId: string, noteId: string) => VehicleNote | null;
+    removeNoteFromVehicle: (vehicleId: string, noteId: string) => void;
 };
 
 
@@ -36,6 +38,13 @@ const defaultContext: VehiclesContextType = {
     addNoteToVehicle: () => {
         console.warn('addNoteToVehicle called without provider; this is a no-op.');
     },
+    findNoteById: () => {
+        console.warn('findNoteById called without provider; this is a no-op.');
+        return null;
+    },
+    removeNoteFromVehicle: () => {
+        console.warn('removeNoteFromVehicle called without provider; this is a no-op.');
+    }
 
 };
 
@@ -70,8 +79,7 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         storage.set('vehicles', JSON.stringify(vehiclesList));
 
         setVehicles((prevVehicles) => [...prevVehicles, newVehicle]);
-
-        console.log("Veículo salvo:", newVehicle);
+        return newVehicle
     }, []);
 
     const retrieveVehicles = useCallback(() => {
@@ -104,8 +112,6 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         }
         storage.delete('vehicles');
         setVehicles([]);
-
-        console.log("Todos os registros foram deletados.");
     }, []);
 
     const addNoteToVehicle = useCallback((
@@ -123,8 +129,8 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         const newNote: VehicleNote = {
             id: uuid.v4() as string,
             vehicleId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
             ...noteData,
         };
 
@@ -135,13 +141,43 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         setVehicles((prevVehicles) =>
             prevVehicles.map((v) => (v.id === vehicleId ? { ...v, notes: [...v.notes, newNote] } : v))
         );
+    }, []);
 
-        console.log(`Nota adicionada ao veículo ${vehicleId}:`, newNote);
+    const removeNoteFromVehicle = useCallback((vehicleId: string, noteId: string) => {
+        const vehicleRaw = storage.getString(`vehicle.${vehicleId}`);
+        if (!vehicleRaw) {
+            console.error("Veículo não encontrado.");
+            return;
+        }
+
+        const vehicle: Vehicle = JSON.parse(vehicleRaw);
+        const updatedNotes = vehicle.notes.filter(note => note.id !== noteId);
+        vehicle.notes = updatedNotes;
+
+        storage.set(`vehicle.${vehicleId}`, JSON.stringify(vehicle));
+
+        setVehicles((prevVehicles) =>
+            prevVehicles.map((v) =>
+                v.id === vehicleId ? { ...v, notes: updatedNotes } : v
+            )
+        );
     }, []);
 
 
+    const findNoteById = useCallback((vehicleId: string, noteId: string): VehicleNote | null => {
+        const vehicleRaw = storage.getString(`vehicle.${vehicleId}`);
+        if (!vehicleRaw) {
+            console.error("Veículo não encontrado.");
+            return null;
+        }
 
-    useEffect(() => {
+        const vehicle: Vehicle = JSON.parse(vehicleRaw);
+        const foundNote = vehicle.notes.find(note => note.id === noteId);
+
+        return foundNote ?? null;
+    }, []);
+
+        useEffect(() => {
         const vehiclesListRaw = storage.getString('vehicles');
         if (vehiclesListRaw) {
             const vehicleIds: string[] = JSON.parse(vehiclesListRaw);
@@ -155,6 +191,7 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+
     useEffect(() => {
         retrieveVehicles();
     }, [retrieveVehicles]);
@@ -167,7 +204,9 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
             retrieveVehicles,
             findById,
             deleteAllVehicles,
-            addNoteToVehicle
+            addNoteToVehicle,
+            findNoteById,
+            removeNoteFromVehicle,
         }}>
             {children}
         </VehiclesContext.Provider>

@@ -18,12 +18,12 @@ interface RouteParams {
     vehicleId: string;
 }
 
-
 export function VehicleNotes() {
+
     const route = useRoute();
     const { vehicleId } = route.params as RouteParams;
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
-    const { findById, addNoteToVehicle } = useContext(VehiclesContext);
+    const { findById } = useContext(VehiclesContext);
 
     function getVehicle() {
         const res = findById(vehicleId);
@@ -42,7 +42,10 @@ export function VehicleNotes() {
         <SafeAreaView style={styles.safeAreaView}>
             <Header
                 title={vehicleState?.vehicleNickname}
-                hasFilter
+                hasOptions
+                optionsProps={{
+                    onPress: () => { }
+                }}
             />
             <ScrollView
                 style={styles.container}
@@ -71,6 +74,9 @@ export function VehicleNotes() {
                 <FlatList
                     data={vehicleState.notes}
                     renderItem={({ item }) => <CardNote
+                        key={item.id}
+                        noteId={item.id}
+                        vehicleId={vehicleId}
                         title={item.title}
                         description={item.description}
                         price={item.price}

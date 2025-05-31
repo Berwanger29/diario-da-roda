@@ -10,8 +10,9 @@ import { VehiclesContext } from "../contexts/appContext";
 import { DefaultTextInput } from "../components/DefaultTextInput";
 import { DefaultButton } from "../components/DefaultButton";
 import { VehicleNote } from "../@types/vehicleNote";
+import { formatCurrency } from "../helpers/formatCurrency";
 
-export function FormVehicle() {
+export function FormNewNote() {
 
     const navigation = useNavigation()
     const route = useRoute()
@@ -22,7 +23,9 @@ export function FormVehicle() {
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [noteDescription, setNoteDescription] = useState('');
-    const [notePrice, setNotePrice] = useState<number | null>();
+    const [notePrice, setNotePrice] = useState<number | null>(null);
+    const [notePriceFormatted, setNotePriceFormatted] = useState('');
+
 
     function getVehicle() {
         const res = findById(vehicleId)
@@ -81,10 +84,33 @@ export function FormVehicle() {
                     charAmount={noteDescription.length}
                 />
 
+                <DefaultTextInput
+                    text="Preço"
+                    keyboardType="numeric"
+                    placeholder={`"R$100,00"`}
+                    onChangeText={(text) => {
+                        const onlyNumbers = text.replace(/\D/g, '');
+                        if (onlyNumbers === '') {
+                            setNotePrice(null);
+                            setNotePriceFormatted('');
+                            return;
+                        }
+
+                        const valueInCents = parseInt(onlyNumbers, 10);
+
+                        setNotePrice(valueInCents);
+                        setNotePriceFormatted(formatCurrency(valueInCents));
+                    }}
+
+                    value={notePriceFormatted}
+                />
+
+
             </ScrollView>
             <DefaultButton
                 label="Salvar"
                 iconName="FloppyDisk"
+                
                 onPress={handleSaveForm}
             />
         </SafeAreaView>

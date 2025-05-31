@@ -20,7 +20,7 @@ import { VehiclesContext } from '../contexts/appContext';
 const Drawer = createDrawerNavigator();
 
 
-
+type IconColorProps = keyof typeof theme["COLORS"]
 
 export function MyDrawer() {
 
@@ -62,8 +62,12 @@ export function MyDrawer() {
         options={{
           drawerLabel: 'Conta',
           drawerIcon: ({ color }) => (
-            <DefaultIcon name='UserCircle' color={color} size={24} />
+            <DefaultIcon name='UserCircle' color={color as IconColorProps} size={24} />
           ),
+          drawerItemStyle:{
+            marginBottom: 20,
+            borderRadius: 10,
+          }
         }}
       />
 
@@ -81,6 +85,7 @@ export function MyDrawer() {
           />
         ))
       }
+      
 
       <Drawer.Screen
         name="NewVehicle"
@@ -88,8 +93,12 @@ export function MyDrawer() {
         options={{
           drawerLabel: 'Novo Veículo',
           drawerIcon: ({ color }) => (
-            <DefaultIcon name='PlusCircle' color={color} size={24} />
+            <DefaultIcon name='PlusCircle' color={color as IconColorProps} size={24} />
           ),
+          drawerItemStyle:{
+            marginTop: 20,
+            borderRadius: 10,
+          }
         }}
       />
 
@@ -99,7 +108,7 @@ export function MyDrawer() {
         options={{
           drawerLabel: 'Configurações',
           drawerIcon: ({ color }) => (
-            <DefaultIcon name='Gear' color={color} size={24} />
+            <DefaultIcon name='Gear' color={color as IconColorProps} size={24} />
           ),
         }}
       />

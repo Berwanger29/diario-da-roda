@@ -1,8 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Login } from '../screens/Login';
 import theme from '../theme/theme';
-import { Home } from '../screens/Home';
-import { FormVehicle } from '../screens/FormVehicle';
+import { FormNewNote } from '../screens/FormNewNote';
 import { MyDrawer } from './MyDrawer';
 import { Note } from '../screens/Note';
 import { Vehicle } from '../screens/Vehicle';
@@ -38,8 +37,8 @@ export function StackScreens() {
                 name='Note'
             />
             <Screen
-                component={FormVehicle}
-                name="FormVehicle"
+                component={FormNewNote}
+                name="FormNewNote"
                 options={{
                     animation: 'default'
                 }}

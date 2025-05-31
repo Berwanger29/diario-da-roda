@@ -15,7 +15,7 @@ export function AddButton({ vehicledId }: Props) {
 
     return (
         <Pressable
-            onPress={() => navigation.navigate("FormVehicle", {
+            onPress={() => navigation.navigate("FormNewNote", {
                 vehicleId: vehicledId
             })}
             style={{

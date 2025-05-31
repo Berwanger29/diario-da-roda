@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Header } from "../components/Header";
 import { VehicleTypes } from "../@types/vehicleTypes";
 import { VehiclesContext, VehiclesContextType } from "../contexts/appContext";
+import { DefaultTextInput } from "../components/DefaultTextInput";
 
 
 
@@ -35,17 +36,17 @@ export type InputImageProps = {
 
 const vehicleTypeOption = [
     {
-        type: 'carro',
+        type: 'Carro',
         iconName: 'Car',
         fipeName: 'cars'
     },
     {
-        type: 'moto',
+        type: 'Moto',
         iconName: 'Motorcycle',
         fipeName: 'motorcyles'
     },
     {
-        type: 'caminhão',
+        type: 'Caminhão',
         iconName: 'Truck',
         fipeName: 'trucks'
     }
@@ -112,8 +113,9 @@ export function NewVehicle() {
     }
 
     function handleFinish() {
-        handleSaveVehicle(vehicleType!, selectedImage!, vehicleNickname)
-        
+        const res = handleSaveVehicle(vehicleType!, selectedImage!, vehicleNickname)
+        console.log(res)
+        // navigation.navigate(`VehicleNotes_${res.id}`)
     }
 
     useEffect(() => {
@@ -185,8 +187,16 @@ export function NewVehicle() {
                         onPress={handleGetImage}
                     />
                 </View>
+                <DefaultTextInput
+                    text="Apelido do veículo"
+                    placeholder="Digite o apelido do veículo"
+                    charMax={25}
+                    charAmount={vehicleNickname.length}
+                    onChangeText={(e) => handleVehicleNicknameChange(e)}
+                    value={vehicleNickname}
+                />
 
-                <View
+                {/* <View
                     style={styles.inputContainer}
                 >
                     <DefaultText
@@ -214,7 +224,7 @@ export function NewVehicle() {
                             marginTop: theme.MEASURES.PADDING / 2,
                         }}
                     />
-                </View>
+                </View> */}
                 <DefaultButton
                     label="Finalizar"
                     iconName="FlagCheckered"

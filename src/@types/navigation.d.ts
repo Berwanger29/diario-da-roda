@@ -4,18 +4,21 @@ export declare global {
       Login: undefined;
       Account: undefined;
       MyDrawer: {
-        screen?:string
+        screen?: string
       };
       NewVehicle: undefined;
       VehicleNotes: {
         vehicleId: string
       };
-      
-      FormVehicle: {
+
+      FormNewNote: {
         vehicleId: string
       };
       Vehicle: undefined;
-      Note: undefined;
+      Note: {
+        noteId: string,
+        vehicleId: string
+      };
       Settings: undefined;
     }
   }

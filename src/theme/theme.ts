@@ -2,11 +2,12 @@ export default {
     COLORS: {
         PRIMARY: "#eb5e28",
         LIGHT: "#fffcf2",
-        LIGHT_200:"#BABCCC",
+        LIGHT_200:"#777",
         LIGHT_400: "#ccc5b9",
         DARK: "#252422",
         DARK_100: "#403d39",
-        BLACK: "#0a0908"
+        BLACK: "#0a0908",
+        
     },
     FONTS: {
         BOLD: "Manrope_700Bold",

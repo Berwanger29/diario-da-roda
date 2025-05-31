@@ -4,6 +4,7 @@ import { DefaultText } from "./DefaultText";
 import { CardNoteImagePreview } from "./CardNoteImagePreview";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
+import { formatCurrency } from "../helpers/formatCurrency";
 
 //Título
 //Descrição
@@ -12,18 +13,23 @@ import moment from "moment";
 //Data
 
 type Props = {
+    noteId: string;
+    vehicleId: string
     title: string;
     description: string;
     price?: number | null | undefined;
     date: Date
 }
 
-export function CardNote({ description, price, title, date }: Props) {
+export function CardNote({ noteId, vehicleId, description, price, title, date }: Props) {
 
     const navigation = useNavigation()
 
     function handleNavigateToNoteScreen() {
-        navigation.navigate("Note")
+        navigation.navigate("Note", {
+            vehicleId: vehicleId,
+            noteId: noteId
+        })
     }
 
     return (
@@ -35,11 +41,12 @@ export function CardNote({ description, price, title, date }: Props) {
             <DefaultText
                 text={title}
                 fontSize="L"
-                weight="MEDIUM"
+                weight="BOLD"
             />
             <DefaultText
                 text={description}
                 color="LIGHT_400"
+                numberOfLines={4}
             />
 
             {/* IMAGENS */}
@@ -58,8 +65,8 @@ export function CardNote({ description, price, title, date }: Props) {
                 {
                     price ?
                         <DefaultText
-                            text={String(price)}
-                            fontSize="L"
+                            text={formatCurrency(price)}
+                            fontSize="M"
                             weight="BOLD"
                         />
                         :
@@ -70,8 +77,10 @@ export function CardNote({ description, price, title, date }: Props) {
                 {
                     date ?
                         <DefaultText
-                            text={String(moment(date).format('L'))}
+                            text={String(moment(date).format('DD/MM/YYYY'))}
                             color="LIGHT_400"
+                            weight="LIGHT"
+                            fontSize="S"
                         />
                         :
                         <DefaultText
