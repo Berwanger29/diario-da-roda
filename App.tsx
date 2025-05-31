@@ -36,18 +36,17 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <VehiclesProvider>
-        <IconContext.Provider
-          value={{
-            size: 24,
-            weight: 'fill',
-            color: theme.COLORS.LIGHT_400
-          }}
-        >
-
-          <Navigator />
-        </IconContext.Provider>
-      </VehiclesProvider>
+        <VehiclesProvider>
+          <IconContext.Provider
+            value={{
+              size: 24,
+              weight: 'fill',
+              color: theme.COLORS.LIGHT_400
+            }}
+          >
+            <Navigator />
+          </IconContext.Provider>
+        </VehiclesProvider>
     </SafeAreaProvider>
   );
 }

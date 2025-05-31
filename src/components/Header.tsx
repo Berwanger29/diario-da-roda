@@ -1,4 +1,4 @@
-import { Pressable, PressableProps, StyleSheet, View } from "react-native";
+import { Pressable, PressableProps, StyleSheet, Text, View } from "react-native";
 import theme from "../theme/theme";
 import { DefaultText } from "./DefaultText";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -37,27 +37,27 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
                     />
                 </Pressable>
             }
-            
-                <DefaultText
-                    text={title}
-                    style={{
-                        paddingLeft: 29,
-                        paddingRight: 33
-                    }}
-                    weight="BOLD"
-                    fontSize="XL"
-                    color="LIGHT"
-                    numberOfLines={1}
-                />
-        
+
+            <DefaultText
+                text={title}
+                style={{
+                    paddingLeft: 29,
+                    paddingRight: 33
+                }}
+                weight="BOLD"
+                fontSize="XL"
+                color="LIGHT"
+                numberOfLines={1}
+            />
+
             {
                 hasOptions &&
                 <Pressable
                     {...optionsProps}
-                style={{
-                    position: "absolute",
-                    right: theme.MEASURES.PADDING,
-                }}
+                    style={{
+                        position: "absolute",
+                        right: theme.MEASURES.PADDING,
+                    }}
                 >
                     <DefaultIcon
                         name="DotsThree"
@@ -66,6 +66,8 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
                     />
                 </Pressable>
             }
+
+
 
         </View>
     )
