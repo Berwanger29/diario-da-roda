@@ -9,9 +9,12 @@ import { IconContext } from 'phosphor-react-native';
 import theme from './src/theme/theme';
 import { VehiclesProvider } from './src/contexts/appContext';
 
+
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+
+
 
   const [loaded, error] = useFonts({
     Manrope_700Bold,
@@ -30,6 +33,7 @@ export default function App() {
     return null;
   }
 
+
   return (
     <SafeAreaProvider>
       <VehiclesProvider>
@@ -40,6 +44,7 @@ export default function App() {
             color: theme.COLORS.LIGHT_400
           }}
         >
+
           <Navigator />
         </IconContext.Provider>
       </VehiclesProvider>

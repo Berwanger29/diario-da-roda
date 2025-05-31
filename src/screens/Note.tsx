@@ -10,6 +10,7 @@ import { VehiclesContext } from "../contexts/appContext";
 import { Vehicle } from "../@types/vehicle";
 import { DefaultLoading } from "../components/DefaultLoading";
 import { VehicleNote } from "../@types/vehicleNote";
+import { Toast } from "toastify-react-native";
 
 interface RouteParams {
     vehicleId: string;
@@ -32,6 +33,7 @@ export function Note() {
 
     function handleDeleteNote() {
         removeNoteFromVehicle(vehicleId, noteId);
+        Toast.success("Nota removida com sucesso!");
         navigation.goBack();
     }
 

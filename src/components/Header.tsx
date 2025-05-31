@@ -77,8 +77,9 @@ const styles = StyleSheet.create({
         // backgroundColor: theme.COLORS.DARK_100,
         borderRadius: theme.MEASURES.BORDER_RADIUS,
         paddingHorizontal: theme.MEASURES.PADDING,
+        paddingVertical: theme.MEASURES.PADDING / 2,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     icon: {
         position: "absolute",
