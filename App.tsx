@@ -8,6 +8,8 @@ import 'react-native-gesture-handler';
 import { IconContext } from 'phosphor-react-native';
 import theme from './src/theme/theme';
 import { VehiclesProvider } from './src/contexts/appContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 
 SplashScreen.preventAutoHideAsync();
@@ -36,6 +38,11 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
+      <GestureHandlerRootView
+        style={{
+          flex:1
+        }}
+      >
         <VehiclesProvider>
           <IconContext.Provider
             value={{
@@ -47,6 +54,7 @@ export default function App() {
             <Navigator />
           </IconContext.Provider>
         </VehiclesProvider>
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 }

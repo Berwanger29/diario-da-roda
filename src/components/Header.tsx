@@ -6,6 +6,8 @@ import { DrawerActions, useNavigation } from "@react-navigation/native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DefaultIcon } from "./DefaultIcon";
 
+
+
 type Props = {
     title: string;
     hasOptions?: boolean;
@@ -52,23 +54,16 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
 
             {
                 hasOptions &&
-                <Pressable
-                    {...optionsProps}
+                <View
                     style={{
                         position: "absolute",
                         right: theme.MEASURES.PADDING,
+                        width: 400
                     }}
                 >
-                    <DefaultIcon
-                        name="DotsThree"
-                        weight="bold"
-                        size={28}
-                    />
-                </Pressable>
+
+                </View>
             }
-
-
-
         </View>
     )
 }
