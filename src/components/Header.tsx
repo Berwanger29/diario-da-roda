@@ -5,17 +5,19 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DefaultIcon } from "./DefaultIcon";
+import { BackButton } from "./BackButton";
 
 
 
 type Props = {
     title: string;
-    hasOptions?: boolean;
+    variant?: "primary" | "secondary";
     showDrawerMenuIcon?: boolean
+    hasOptions?: boolean;
     optionsProps?: PressableProps
 }
 
-export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsProps }: Props) {
+export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsProps, variant = 'primary' }: Props) {
 
     const navigation = useNavigation();
 
@@ -28,7 +30,7 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
             style={styles.continer}
         >
             {
-                showDrawerMenuIcon && <Pressable
+                (showDrawerMenuIcon && variant === "primary") && <Pressable
                     style={styles.icon}
                     onPress={handleToggleDrawer}
                 >
@@ -38,6 +40,14 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
                         color={theme.COLORS.LIGHT_400}
                     />
                 </Pressable>
+            }
+
+            {
+                (variant === 'secondary') && <View
+                    style={styles.icon}
+                >
+                    <BackButton />
+                </View>
             }
 
             <DefaultText
@@ -52,17 +62,19 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
                 numberOfLines={1}
             />
 
+
             {
                 hasOptions &&
-                <View
-                    style={{
-                        position: "absolute",
-                        right: theme.MEASURES.PADDING,
-                        width: 400
-                    }}
+                <Pressable
+                    style={styles.optionsIcon}
+                    {...optionsProps}
                 >
-
-                </View>
+                    <DefaultIcon
+                        name="DotsThree"
+                        weight="bold"
+                        size={28}
+                    />
+                </Pressable>
             }
         </View>
     )
@@ -71,9 +83,7 @@ export function Header({ title, hasOptions, showDrawerMenuIcon = true, optionsPr
 const styles = StyleSheet.create({
     continer: {
         flexDirection: "row",
-        // backgroundColor: theme.COLORS.DARK_100,
-        borderRadius: theme.MEASURES.BORDER_RADIUS,
-        paddingHorizontal: theme.MEASURES.PADDING,
+        
         paddingVertical: theme.MEASURES.PADDING / 2,
         alignItems: "center",
         justifyContent: "center",
@@ -81,5 +91,14 @@ const styles = StyleSheet.create({
     icon: {
         position: "absolute",
         left: theme.MEASURES.PADDING,
+    },
+    backButtonPosition: {
+        position: "absolute",
+        left: (theme.MEASURES.PADDING ),
+
+    },
+    optionsIcon: {
+        position: "absolute",
+        right: (theme.MEASURES.PADDING / 2),
     }
 })

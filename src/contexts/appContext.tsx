@@ -16,6 +16,11 @@ export type VehiclesContextType = {
     addNoteToVehicle: (vehicleId: string, note: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>) => void;
     findNoteById: (vehicleId: string, noteId: string) => VehicleNote | null;
     removeNoteFromVehicle: (vehicleId: string, noteId: string) => void;
+    updateNoteFromVehicle: (
+        vehicleId: string,
+        noteId: string,
+        updatedNote: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>
+    ) => void;
 };
 
 
@@ -44,8 +49,10 @@ const defaultContext: VehiclesContextType = {
     },
     removeNoteFromVehicle: () => {
         console.warn('removeNoteFromVehicle called without provider; this is a no-op.');
-    }
-
+    },
+    updateNoteFromVehicle: () => {
+        console.warn('updateNoteFromVehicle called without provider; this is a no-op.');
+    },
 };
 
 
@@ -177,7 +184,7 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         return foundNote ?? null;
     }, []);
 
-        useEffect(() => {
+    useEffect(() => {
         const vehiclesListRaw = storage.getString('vehicles');
         if (vehiclesListRaw) {
             const vehicleIds: string[] = JSON.parse(vehiclesListRaw);
@@ -190,6 +197,45 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
             setVehicles(loadedVehicles);
         }
     }, []);
+
+    const updateNoteFromVehicle = useCallback((
+        vehicleId: string,
+        noteId: string,
+        updatedFields: Partial<Pick<VehicleNote, 'title' | 'description' | 'price'>>
+    ) => {
+        const vehicleRaw = storage.getString(`vehicle.${vehicleId}`);
+        if (!vehicleRaw) {
+            console.error("Veículo não encontrado.");
+            return;
+        }
+
+        const vehicle: Vehicle = JSON.parse(vehicleRaw);
+        const noteIndex = vehicle.notes.findIndex(note => note.id === noteId);
+
+        if (noteIndex === -1) {
+            console.error("Nota não encontrada.");
+            return;
+        }
+
+        const updatedNote: VehicleNote = {
+            ...vehicle.notes[noteIndex],
+            ...updatedFields,
+            updatedAt: new Date(),
+        };
+
+        vehicle.notes[noteIndex] = updatedNote;
+
+        storage.set(`vehicle.${vehicleId}`, JSON.stringify(vehicle));
+
+        setVehicles(prevVehicles =>
+            prevVehicles.map(v =>
+                v.id === vehicleId
+                    ? { ...v, notes: v.notes.map(n => n.id === noteId ? updatedNote : n) }
+                    : v
+            )
+        );
+    }, []);
+
 
 
     useEffect(() => {
@@ -207,6 +253,7 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
             addNoteToVehicle,
             findNoteById,
             removeNoteFromVehicle,
+            updateNoteFromVehicle
         }}>
             {children}
         </VehiclesContext.Provider>

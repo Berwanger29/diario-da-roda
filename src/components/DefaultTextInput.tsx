@@ -45,9 +45,7 @@ export function DefaultTextInput({ text, charAmount, charMax, ...rest }: Props) 
 
 const styles = StyleSheet.create({
     container: {
-        borderWidth: 1,
-        borderColor: theme.COLORS.LIGHT,
-        borderStyle: 'solid'
+
     },
     textInput: {
         color: theme.COLORS.DARK_100,

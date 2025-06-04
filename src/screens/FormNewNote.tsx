@@ -11,14 +11,22 @@ import { DefaultTextInput } from "../components/DefaultTextInput";
 import { DefaultButton } from "../components/DefaultButton";
 import { VehicleNote } from "../@types/vehicleNote";
 import { formatCurrency } from "../helpers/formatCurrency";
+import { Toast } from "toastify-react-native";
+
+
+type RouteParams = {
+    vehicleId: string;
+    noteId?: string;
+    toEdit?: boolean
+}
 
 export function FormNewNote() {
 
     const navigation = useNavigation()
     const route = useRoute()
-    const { vehicleId } = route.params as { vehicleId: string }
+    const { vehicleId, toEdit, noteId } = route.params as RouteParams
 
-    const { findById, addNoteToVehicle } = useContext(VehiclesContext)
+    const { findById, addNoteToVehicle, findNoteById, updateNoteFromVehicle } = useContext(VehiclesContext)
 
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
@@ -29,11 +37,36 @@ export function FormNewNote() {
 
     function getVehicle() {
         const res = findById(vehicleId)
+        if (!res) {
+            Toast.error("Veículo não encontrado!");
+            navigation.goBack();
+            return;
+        }
+
+        if (toEdit && noteId) {
+            getNoteToEdit()
+
+        }
         setVehicleState(res)
     }
 
-    function handleSaveForm() {
+    function getNoteToEdit() {
+        const res = findNoteById(vehicleId, noteId!);
+        if (!res) {
+            Toast.error("Nota não encontrada!");
+            navigation.goBack();
+            return;
+        }
+        setNoteTitle(res.title);
+        setNoteDescription(res.description);
+        if (!res.price) {
+            setNotePrice(0)
+        } else {
+            setNotePriceFormatted(formatCurrency(res.price))
+        }
+    }
 
+    function handleSaveForm() {
         let newNote: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'> = {
             title: noteTitle,
             description: noteDescription,
@@ -44,8 +77,36 @@ export function FormNewNote() {
         navigation.goBack()
     }
 
+    function handleUpdateNote() {
+        updateNoteFromVehicle(vehicleId, noteId!, {
+            title: noteTitle,
+            description: noteDescription,
+            price: notePrice
+        })
+        navigation.goBack()
+        Toast.success("Nota editada com sucesso!")
+    }
+
+    function fomartedPrice(text: string) {
+        const onlyNumbers = text.replace(/\D/g, '');
+        if (onlyNumbers === '') {
+            setNotePrice(null);
+            setNotePriceFormatted('');
+            return;
+        }
+
+        const valueInCents = parseInt(onlyNumbers, 10);
+
+        let priceFomated = formatCurrency(valueInCents)
+        setNotePrice(valueInCents);
+        setNotePriceFormatted(priceFomated);
+
+        return priceFomated
+    }
+
     useEffect(() => {
         getVehicle()
+        console.log(toEdit)
     }, [])
 
     return (
@@ -88,19 +149,7 @@ export function FormNewNote() {
                     text="Preço"
                     keyboardType="numeric"
                     placeholder={`"R$100,00"`}
-                    onChangeText={(text) => {
-                        const onlyNumbers = text.replace(/\D/g, '');
-                        if (onlyNumbers === '') {
-                            setNotePrice(null);
-                            setNotePriceFormatted('');
-                            return;
-                        }
-
-                        const valueInCents = parseInt(onlyNumbers, 10);
-
-                        setNotePrice(valueInCents);
-                        setNotePriceFormatted(formatCurrency(valueInCents));
-                    }}
+                    onChangeText={(text) => fomartedPrice(text)}
 
                     value={notePriceFormatted}
                 />
@@ -110,8 +159,8 @@ export function FormNewNote() {
             <DefaultButton
                 label="Salvar"
                 iconName="FloppyDisk"
-                
-                onPress={handleSaveForm}
+
+                onPress={() => toEdit ? handleUpdateNote() : handleSaveForm()}
             />
         </SafeAreaView>
     )

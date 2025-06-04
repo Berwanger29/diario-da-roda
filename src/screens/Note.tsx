@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import theme from "../theme/theme";
 import { DefaultText } from "../components/DefaultText";
@@ -14,6 +14,9 @@ import { DefaultBottomSheet } from "../components/DefaultBottomSheet"; // ajuste
 import BottomSheet from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DefaultLoading } from "../components/DefaultLoading";
+import { Header } from "../components/Header";
+import moment from "moment";
+import { formatCurrency } from "../helpers/formatCurrency";
 
 interface RouteParams {
     vehicleId: string;
@@ -36,9 +39,30 @@ export function Note() {
     }
 
     function handleDeleteNote() {
-        removeNoteFromVehicle(vehicleId, noteId);
-        Toast.success("Nota removida com sucesso!");
-        navigation.goBack();
+        Alert.alert("Excluir nota", "Você tem certeza que deseja excluir essa nota?", [
+            {
+                text: "Cancelar",
+                style: "cancel"
+            },
+            {
+                text: "Excluir",
+                style: "destructive",
+                onPress: () => {
+                    removeNoteFromVehicle(vehicleId, noteId);
+                    Toast.success("Nota excluída com sucesso!");
+                    navigation.goBack();
+                }
+            }
+        ]);
+    }
+
+
+    function handleNavigateToEditNote() {
+        navigation.navigate('FormNewNote', {
+            vehicleId: vehicleId,
+            noteId: noteId,
+            toEdit: true,
+        });
     }
 
     function handleBottomSheetMenu() {
@@ -54,44 +78,76 @@ export function Note() {
     }
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <SafeAreaView style={styles.safeAreaView}>
-                <ScrollView style={styles.container}>
-                    <View style={styles.header}>
-                        <BackButton />
-                        <Pressable onPress={handleBottomSheetMenu}>
-                            <DefaultIcon
-                                name="DotsThree"
-                                weight="bold"
-                                size={30}
-                            />
-                        </Pressable>
-                    </View>
 
-                    <View style={styles.content}>
-                        <DefaultText text={noteState?.title} />
-                    </View>
-                </ScrollView>
+        <SafeAreaView style={styles.safeAreaView}>
+            <Header
+                title={noteState.title}
+                showDrawerMenuIcon={false}
+                variant="secondary"
+                hasOptions={true}
+                optionsProps={{
+                    onPress: handleBottomSheetMenu
+                }}
+            />
+            <ScrollView
+                style={styles.container}
 
-
-                <DefaultBottomSheet
-                    ref={bottomSheetRef}
-                    options={[
+            >
+                <View style={styles.content}>
+                    <DefaultText
+                        text={noteState?.description}
+                        fontSize="L"
+                    />
+                    <View
+                        style={styles.footer}
+                    >
                         {
-                            iconName: "Trash",
-                            label: "Excluir",
-                            onPress: handleDeleteNote
-                        },
+                            noteState.price ?
+                                <DefaultText
+                                    text={formatCurrency(noteState.price)}
+                                    weight="BOLD"
+                                />
+                                :
+                                <DefaultText
+                                    text=""
+                                />
+                        }
                         {
-                            iconName: "PencilSimpleLine",
-                            label: "Editar",
-                            onPress: () => { }
-                        },
-                        
-                    ]}
-                />
-            </SafeAreaView>
-        </GestureHandlerRootView>
+                            noteState.createdAt ?
+                                <DefaultText
+                                    text={String(moment(noteState.createdAt).format('DD/MM/YYYY'))}
+                                    color="LIGHT_400"
+                                    weight="LIGHT"
+                                    fontSize="S"
+                                />
+                                :
+                                <DefaultText
+                                    text=""
+                                />
+                        }
+                    </View>
+                </View>
+            </ScrollView>
+
+
+            <DefaultBottomSheet
+                ref={bottomSheetRef}
+                options={[
+                    {
+                        iconName: "Trash",
+                        label: "Excluir",
+                        onPress: handleDeleteNote
+                    },
+                    {
+                        iconName: "PencilSimpleLine",
+                        label: "Editar",
+                        onPress: handleNavigateToEditNote
+                    },
+
+                ]}
+            />
+        </SafeAreaView>
+
     );
 }
 
@@ -102,17 +158,17 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding: theme.MEASURES.PADDING
-    },
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: theme.MEASURES.PADDING
+        padding: theme.MEASURES.PADDING,
     },
     content: {
         backgroundColor: theme.COLORS.DARK_100,
         borderRadius: theme.MEASURES.BORDER_RADIUS,
-        padding: theme.MEASURES.PADDING / 1.5
+        padding: theme.MEASURES.PADDING / 1.5,
+        gap: theme.MEASURES.PADDING / 2,
+    },
+    footer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     }
 });

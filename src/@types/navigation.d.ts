@@ -12,7 +12,9 @@ export declare global {
       };
 
       FormNewNote: {
-        vehicleId: string
+        vehicleId: string,
+        noteId: noteId,
+        toEdit?: boolean
       };
       Vehicle: undefined;
       Note: {
