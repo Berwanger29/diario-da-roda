@@ -87,13 +87,13 @@ export function VehicleNotes() {
                 <CardCarInfo
                     imageUri={vehicleState.image.uri}
                 />
-                <DefaultText
+                {/* <DefaultText
                     text="Anúncio"
                     fontSize="S"
                     weight="LIGHT"
                     color="LIGHT_400"
                     style={{ alignSelf: "center" }}
-                />
+                /> */}
                 <CardAdBanner />
                 <DefaultText
                     text="Notas"

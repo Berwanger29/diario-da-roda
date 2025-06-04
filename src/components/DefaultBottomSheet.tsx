@@ -10,6 +10,7 @@ import { DefaultIcon } from './DefaultIcon';
 import { IconName } from '../@types/iconName';
 import { DefaultText } from './DefaultText';
 import theme from '../theme/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type BottomSheetOption = {
   label: string;
@@ -25,6 +26,9 @@ const BOTTOM_SHEET_BORDER_RADIUS = 13;
 
 export const DefaultBottomSheet = forwardRef<BottomSheet, DefaultBottomSheetProps>(
   ({ options }, ref) => {
+
+    const insets = useSafeAreaInsets();
+
     const handleSheetChanges = useCallback((index: number) => {
       console.log('BottomSheet changed to index:', index);
     }, []);
@@ -67,6 +71,11 @@ export const DefaultBottomSheet = forwardRef<BottomSheet, DefaultBottomSheetProp
         }}
         backgroundStyle={{
           backgroundColor: theme.COLORS.DARK_100,
+        }}
+        style={{
+          marginHorizontal: 10,
+          alignSelf: 'center',
+          
         }}
       >
         <BottomSheetView style={styles.contentContainer}>
