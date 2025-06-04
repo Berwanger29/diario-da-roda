@@ -21,6 +21,8 @@ export type VehiclesContextType = {
         noteId: string,
         updatedNote: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>
     ) => void;
+    deleteVehicleById: (vehicleId: string) => void;
+
 };
 
 
@@ -53,6 +55,10 @@ const defaultContext: VehiclesContextType = {
     updateNoteFromVehicle: () => {
         console.warn('updateNoteFromVehicle called without provider; this is a no-op.');
     },
+    deleteVehicleById: () => {
+        console.warn('deleteVehicleById called without provider; this is a no-op.');
+    },
+
 };
 
 
@@ -184,6 +190,21 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
         return foundNote ?? null;
     }, []);
 
+    const deleteVehicleById = useCallback((vehicleId: string) => {
+        const vehiclesListRaw = storage.getString('vehicles');
+        if (!vehiclesListRaw) return;
+
+        const vehicleIds: string[] = JSON.parse(vehiclesListRaw);
+        const updatedVehicleIds = vehicleIds.filter(id => id !== vehicleId);
+
+        storage.delete(`vehicle.${vehicleId}`);
+
+        storage.set('vehicles', JSON.stringify(updatedVehicleIds));
+
+        setVehicles(prevVehicles => prevVehicles.filter(vehicle => vehicle.id !== vehicleId));
+    }, []);
+
+
     useEffect(() => {
         const vehiclesListRaw = storage.getString('vehicles');
         if (vehiclesListRaw) {
@@ -253,7 +274,8 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
             addNoteToVehicle,
             findNoteById,
             removeNoteFromVehicle,
-            updateNoteFromVehicle
+            updateNoteFromVehicle,
+            deleteVehicleById
         }}>
             {children}
         </VehiclesContext.Provider>

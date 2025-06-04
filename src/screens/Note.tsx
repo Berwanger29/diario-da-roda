@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.COLORS.DARK_100,
         borderRadius: theme.MEASURES.BORDER_RADIUS,
         padding: theme.MEASURES.PADDING / 1.5,
-        gap: theme.MEASURES.PADDING / 2,
+        gap: theme.MEASURES.PADDING ,
     },
     footer: {
         flexDirection: 'row',
