@@ -16,7 +16,9 @@ export declare global {
         noteId: noteId,
         toEdit?: boolean
       };
-      Vehicle: undefined;
+      Vehicle: {
+        vehicleId: string
+      };
       Note: {
         noteId: string,
         vehicleId: string

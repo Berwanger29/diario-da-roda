@@ -92,6 +92,7 @@ export function VehicleNotes() {
             >
                 <CardCarInfo
                     imageUri={vehicleState.image.uri}
+                    onPress={() => navigation.navigate("Vehicle", { vehicleId: vehicleState.id })}
                 />
                 <CardAdBanner />
                 <DefaultText
