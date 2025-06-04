@@ -57,7 +57,7 @@ export function VehicleNotes() {
             },
         ]);
     }
-    
+
     function handleBottomSheetMenu() {
         if (bottomSheetRef.current) {
             bottomSheetRef.current.expand();
@@ -142,7 +142,7 @@ export function VehicleNotes() {
                     },
                     {
                         iconName: "MagnifyingGlass",
-                        label: "Buscar por nome",
+                        label: "Buscar por título",
                         onPress: () => {
                             bottomSheetRef.current?.openSearchScreen();
                         }

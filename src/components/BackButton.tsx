@@ -4,6 +4,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import theme from "../theme/theme";
 import { useNavigation } from "@react-navigation/native";
 import { DefaultIcon } from "./DefaultIcon";
+import { IconName } from "../@types/iconName";
 
 const size = 25;
 
@@ -19,7 +20,7 @@ export function BackButton() {
             <DefaultIcon 
                 name="CaretLeft"
                 weight="bold"
-                color={theme.COLORS.PRIMARY}
+                color={theme.COLORS.PRIMARY as keyof typeof theme["COLORS"]}
                 size={size}
             />
         </Pressable>

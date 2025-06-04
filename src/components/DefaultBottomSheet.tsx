@@ -12,6 +12,8 @@ import { DefaultText } from './DefaultText';
 import theme from '../theme/theme';
 import { VehicleNote } from '../@types/vehicleNote';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { BackButton } from './BackButton';
+import { DefaultTextInput } from './DefaultTextInput';
 
 
 type BottomSheetOption = {
@@ -151,13 +153,7 @@ export const DefaultBottomSheet = forwardRef<DefaultBottomSheetRefProps, Default
                 </TouchableOpacity>
               ))}
 
-              <TouchableOpacity
-                onPress={handleGoToSearch}
-                style={styles.optionButton}
-              >
-                <DefaultIcon name="MagnifyingGlass" size={20} />
-                <DefaultText text="Buscar por título" />
-              </TouchableOpacity>
+
             </BottomSheetScrollView>
           ) : (
             <BottomSheetScrollView
@@ -171,17 +167,29 @@ export const DefaultBottomSheet = forwardRef<DefaultBottomSheetRefProps, Default
                 onPress={handleGoBack}
                 style={styles.optionButton}
               >
-                <DefaultIcon name="ArrowArcLeft" size={20} />
+                <DefaultIcon
+                  name="CaretLeft"
+                  weight="bold"
+                  color={theme.COLORS.PRIMARY as keyof typeof theme["COLORS"]}
+                  size={25}
+                />
                 <DefaultText text="Voltar" />
               </TouchableOpacity>
 
+              <DefaultTextInput
+                text='Digite um título'
+                placeholder="Digite o título..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {/* 
               <TextInput
                 style={styles.input}
                 placeholder="Digite o título..."
                 placeholderTextColor="#aaa"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-              />
+              /> */}
             </BottomSheetScrollView>
           )}
         </BottomSheetView>
