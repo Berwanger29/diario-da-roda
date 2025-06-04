@@ -1,3 +1,4 @@
+import { useCallback, useContext, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "../components/Header";
 import { Alert, FlatList, ScrollView, StyleSheet, View } from "react-native";
@@ -8,14 +9,14 @@ import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/nativ
 import { CardNote } from "../components/CardNote";
 import { CardCarInfo } from "../components/CardCarInfo";
 import { CardAdBanner } from "../components/CardAdBanner";
-import { useCallback, useContext, useRef, useState } from "react";
 import { Vehicle } from "../@types/vehicle";
 import { VehiclesContext } from "../contexts/appContext";
 import { DefaultLoading } from "../components/DefaultLoading";
 import { EmptyList } from "../components/EmptyList";
 import BottomSheet from '@gorhom/bottom-sheet';
-import { DefaultBottomSheet } from "../components/DefaultBottomSheet";
+import { DefaultBottomSheet, DefaultBottomSheetRefProps } from "../components/DefaultBottomSheet";
 import { Toast } from "toastify-react-native";
+import { VehicleNote } from "../@types/vehicleNote";
 
 
 interface RouteParams {
@@ -25,13 +26,14 @@ interface RouteParams {
 export function VehicleNotes() {
 
     const navigation = useNavigation();
+    const { findById, deleteVehicleById } = useContext(VehiclesContext);
     const route = useRoute();
     const { vehicleId } = route.params as RouteParams;
+
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
-    const { findById, deleteVehicleById } = useContext(VehiclesContext);
+    const [filteredNotes, setFilteredNotes] = useState<VehicleNote[]>([]);
 
-    const bottomSheetRef = useRef<BottomSheet>(null);
-
+    const bottomSheetRef = useRef<BottomSheet & DefaultBottomSheetRefProps>(null);
 
     function getVehicle() {
         const res = findById(vehicleId);
@@ -52,14 +54,18 @@ export function VehicleNotes() {
                     Toast.success("Nota excluída com sucesso!");
                     navigation.goBack();
                 }
-            }
+            },
         ]);
     }
-
-
+    
     function handleBottomSheetMenu() {
-        bottomSheetRef.current?.expand();
+        if (bottomSheetRef.current) {
+            bottomSheetRef.current.expand();
+        } else {
+            console.error("bottomSheetRef.current está undefined");
+        }
     }
+
 
     useFocusEffect(useCallback(() => {
         getVehicle();
@@ -87,13 +93,6 @@ export function VehicleNotes() {
                 <CardCarInfo
                     imageUri={vehicleState.image.uri}
                 />
-                {/* <DefaultText
-                    text="Anúncio"
-                    fontSize="S"
-                    weight="LIGHT"
-                    color="LIGHT_400"
-                    style={{ alignSelf: "center" }}
-                /> */}
                 <CardAdBanner />
                 <DefaultText
                     text="Notas"
@@ -103,16 +102,18 @@ export function VehicleNotes() {
                     style={{ alignSelf: "center" }}
                 />
                 <FlatList
-                    data={vehicleState.notes}
-                    renderItem={({ item }) => <CardNote
-                        key={item.id}
-                        noteId={item.id}
-                        vehicleId={vehicleId}
-                        title={item.title}
-                        description={item.description}
-                        price={item.price}
-                        date={item.createdAt}
-                    />}
+                    data={filteredNotes?.length > 0 ? filteredNotes : vehicleState.notes}
+                    renderItem={({ item }) => (
+                        <CardNote
+                            key={item.id}
+                            noteId={item.id}
+                            vehicleId={vehicleId}
+                            title={item.title}
+                            description={item.description}
+                            price={item.price}
+                            date={item.createdAt}
+                        />
+                    )}
                     scrollEnabled={false}
                     style={styles.flatListContainer}
                     contentContainerStyle={styles.flatListContentContainer}
@@ -124,6 +125,8 @@ export function VehicleNotes() {
             />
             <DefaultBottomSheet
                 ref={bottomSheetRef}
+                onFilterResults={setFilteredNotes}
+                notes={vehicleState.notes}
                 options={[
                     {
                         iconName: "Trash",
@@ -133,10 +136,19 @@ export function VehicleNotes() {
                     {
                         iconName: "Funnel",
                         label: "Filtrar",
-                        onPress: () => { }
+                        onPress: () => {
+                            bottomSheetRef.current?.openFilterScreen();
+                        }
                     },
-
+                    {
+                        iconName: "MagnifyingGlass",
+                        label: "Buscar por nome",
+                        onPress: () => {
+                            bottomSheetRef.current?.openSearchScreen();
+                        }
+                    },
                 ]}
+
             />
         </SafeAreaView>
     );

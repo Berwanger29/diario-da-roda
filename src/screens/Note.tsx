@@ -144,7 +144,6 @@ export function Note() {
                         label: "Editar",
                         onPress: handleNavigateToEditNote
                     },
-
                 ]}
             />
         </SafeAreaView>
