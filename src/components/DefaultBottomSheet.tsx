@@ -1,5 +1,14 @@
-import React, { forwardRef, useCallback, useEffect, useState, useImperativeHandle, useRef } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import BottomSheet, {
   BottomSheetView,
   BottomSheetScrollView,
@@ -10,11 +19,7 @@ import { DefaultIcon } from './DefaultIcon';
 import { IconName } from '../@types/iconName';
 import { DefaultText } from './DefaultText';
 import theme from '../theme/theme';
-import { VehicleNote } from '../@types/vehicleNote';
 import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { BackButton } from './BackButton';
-import { DefaultTextInput } from './DefaultTextInput';
-
 
 type BottomSheetOption = {
   label: string;
@@ -22,46 +27,20 @@ type BottomSheetOption = {
   onPress: () => void;
 };
 
-interface DefaultBottomSheetProps {
-  options: BottomSheetOption[];
-  notes?: VehicleNote[];
-  onFilterResults: (results: VehicleNote[]) => void;
+export interface DefaultBottomSheetRefProps {
+  expand: () => void;
+  close: () => void;
 }
 
-export type DefaultBottomSheetRefProps = {
-  openSearchScreen: () => void;
-  openOptionsScreen: () => void;
-  openFilterScreen: () => void;
-  expand?: () => void; // Adicionando a função expand()
-};
-
+interface DefaultBottomSheetProps {
+  options: BottomSheetOption[];
+}
 
 const BOTTOM_SHEET_BORDER_RADIUS = 13;
 
 export const DefaultBottomSheet = forwardRef<DefaultBottomSheetRefProps, DefaultBottomSheetProps>(
-  ({ options, notes = [], onFilterResults }, ref) => {
+  ({ options }, ref) => {
     const bottomSheetRef = useRef<BottomSheetMethods>(null);
-
-    const [currentScreen, setCurrentScreen] = useState<'options' | 'search' | 'filter'>('options');
-
-    const [searchQuery, setSearchQuery] = useState('');
-
-
-    useImperativeHandle(ref, () => ({
-      openSearchScreen: () => {
-        setCurrentScreen('search');
-        bottomSheetRef.current?.expand();
-      },
-      openOptionsScreen: () => {
-        setCurrentScreen('options');
-        bottomSheetRef.current?.expand();
-      },
-      openFilterScreen: () => {
-        setCurrentScreen('filter');
-        bottomSheetRef.current?.expand();
-      },
-      expand: () => bottomSheetRef.current?.expand(), // Encaminhando o método corretamente
-    }));
 
     const handleSheetChanges = useCallback((index: number) => {
       console.log('BottomSheet changed to index:', index);
@@ -69,8 +48,8 @@ export const DefaultBottomSheet = forwardRef<DefaultBottomSheetRefProps, Default
 
     const getSnapPointFromOptions = (options: BottomSheetOption[]): string => {
       const percentPerOption = 10;
-      const maxPercent = 70;
-      const calculated = options.length * percentPerOption + 20;
+      const maxPercent = 90;
+      const calculated = (options.length * percentPerOption) + 3;
       return `${Math.min(calculated, maxPercent)}%`;
     };
 
@@ -86,34 +65,18 @@ export const DefaultBottomSheet = forwardRef<DefaultBottomSheetRefProps, Default
       []
     );
 
-    useEffect(() => {
-      if (currentScreen === 'search' && notes) { // Check if notes exists
-        const results = notes.filter(note =>
-          note.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        onFilterResults(results);
-      } else {
-        onFilterResults([]); // Fallback when notes is undefined
-      }
-    }, [searchQuery, notes]);
-
-    function handleGoToSearch() {
-      setCurrentScreen('search');
-      setSearchQuery('');
-      onFilterResults(notes); // mostra todos ao entrar
-    }
-
-    function handleGoBack() {
-      setCurrentScreen('options');
-      setSearchQuery('');
-      onFilterResults(notes);
-    }
+    // Expor métodos para o componente pai via ref
+    useImperativeHandle(ref, () => ({
+      expand: () => bottomSheetRef.current?.expand?.(),
+      close: () => bottomSheetRef.current?.close?.(),
+    }));
 
     return (
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
         snapPoints={[getSnapPointFromOptions(options)]}
+        // snapPoints={["10%"]}
         enablePanDownToClose
         onChange={handleSheetChanges}
         backdropComponent={renderBackdrop}
@@ -134,64 +97,23 @@ export const DefaultBottomSheet = forwardRef<DefaultBottomSheetRefProps, Default
         }}
       >
         <BottomSheetView style={styles.contentContainer}>
-          {currentScreen === 'options' ? (
-            <BottomSheetScrollView
-              contentContainerStyle={{
-                flexGrow: 1,
-                backgroundColor: theme.COLORS.DARK_100,
-                gap: 10,
-              }}
-            >
-              {options.map((option, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={option.onPress}
-                  style={styles.optionButton}
-                >
-                  <DefaultIcon name={option.iconName} size={20} />
-                  <DefaultText text={option.label} />
-                </TouchableOpacity>
-              ))}
-
-
-            </BottomSheetScrollView>
-          ) : (
-            <BottomSheetScrollView
-              contentContainerStyle={{
-                flexGrow: 1,
-                backgroundColor: theme.COLORS.DARK_100,
-                gap: 16,
-              }}
-            >
+          <BottomSheetScrollView
+            contentContainerStyle={{
+              backgroundColor: theme.COLORS.DARK_100,
+              gap: 10,
+            }}
+          >
+            {options.map((option, index) => (
               <TouchableOpacity
-                onPress={handleGoBack}
+                key={index}
+                onPress={option.onPress}
                 style={styles.optionButton}
               >
-                <DefaultIcon
-                  name="CaretLeft"
-                  weight="bold"
-                  color={theme.COLORS.PRIMARY as keyof typeof theme["COLORS"]}
-                  size={25}
-                />
-                <DefaultText text="Voltar" />
+                <DefaultIcon name={option.iconName} size={20} />
+                <DefaultText text={option.label} />
               </TouchableOpacity>
-
-              <DefaultTextInput
-                text='Digite um título'
-                placeholder="Digite o título..."
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-              {/* 
-              <TextInput
-                style={styles.input}
-                placeholder="Digite o título..."
-                placeholderTextColor="#aaa"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              /> */}
-            </BottomSheetScrollView>
-          )}
+            ))}
+          </BottomSheetScrollView>
         </BottomSheetView>
       </BottomSheet>
     );
@@ -210,11 +132,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     gap: 12,
-  },
-  input: {
-    backgroundColor: theme.COLORS.DARK_100,
-    color: '#fff',
-    padding: 12,
-    borderRadius: 8,
   },
 });

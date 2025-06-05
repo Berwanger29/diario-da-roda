@@ -6,7 +6,9 @@ export declare global {
       MyDrawer: {
         screen?: string
       };
-      NewVehicle: undefined;
+      NewVehicle: {
+        vehicleId?: string
+      };
       VehicleNotes: {
         vehicleId: string
       };

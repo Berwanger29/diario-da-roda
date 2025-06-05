@@ -22,6 +22,10 @@ export type VehiclesContextType = {
         updatedNote: Omit<VehicleNote, 'id' | 'createdAt' | 'updatedAt' | 'vehicleId'>
     ) => void;
     deleteVehicleById: (vehicleId: string) => void;
+    updateVehicleInfo: (
+        vehicleId: string,
+        updatedFields: Partial<Pick<Vehicle, 'vehicleNickname' | 'type' | 'image'>>
+    ) => void;
 
 };
 
@@ -58,6 +62,9 @@ const defaultContext: VehiclesContextType = {
     deleteVehicleById: () => {
         console.warn('deleteVehicleById called without provider; this is a no-op.');
     },
+    updateVehicleInfo: () => {
+        console.warn('updateVehicleInfo called without provider; this is a no-op.');
+    }
 
 };
 
@@ -203,6 +210,31 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
 
         setVehicles(prevVehicles => prevVehicles.filter(vehicle => vehicle.id !== vehicleId));
     }, []);
+    const updateVehicleInfo = useCallback((
+        vehicleId: string,
+        updatedFields: Partial<Pick<Vehicle, 'vehicleNickname' | 'type' | 'image'>>
+    ) => {
+        const vehicleRaw = storage.getString(`vehicle.${vehicleId}`);
+        if (!vehicleRaw) {
+            console.error("Veículo não encontrado.");
+            return;
+        }
+
+        const vehicle: Vehicle = JSON.parse(vehicleRaw);
+        const updatedVehicle: Vehicle = {
+            ...vehicle,
+            ...updatedFields,
+        };
+
+        storage.set(`vehicle.${vehicleId}`, JSON.stringify(updatedVehicle));
+
+        setVehicles(prevVehicles =>
+            prevVehicles.map(v =>
+                v.id === vehicleId ? updatedVehicle : v
+            )
+        );
+    }, []);
+
 
 
     useEffect(() => {
@@ -275,7 +307,8 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
             findNoteById,
             removeNoteFromVehicle,
             updateNoteFromVehicle,
-            deleteVehicleById
+            deleteVehicleById,
+            updateVehicleInfo
         }}>
             {children}
         </VehiclesContext.Provider>

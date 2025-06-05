@@ -23,8 +23,10 @@ export function CardCarInfo({ imageUri, onPress }: Props) {
     return (
         <TouchableOpacity
             style={styles.container}
-            activeOpacity={theme.CONSTANTS.activeOpacity}
-            onPress={onPress}
+            // activeOpacity={theme.CONSTANTS.activeOpacity}
+            // onPress={onPress}
+            activeOpacity={1}
+            onPress={()=>{}}
         >
             <View
                 style={styles.imageContiner}

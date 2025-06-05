@@ -40,6 +40,15 @@ export function VehicleNotes() {
         setVehicleState(res);
     }
 
+    function handleEditVehicle() {
+        navigation.navigate('MyDrawer', {
+            screen: 'NewVehicle',
+            params: {
+                vehicleId: vehicleState!.id
+            }
+        });
+    }
+
     function handleDeleteVehicle() {
         Alert.alert("Excluir nota", "Você tem certeza que deseja excluir o veículo e todas as suas anotações. Esta ação não poderá ser desfeita.", [
             {
@@ -92,7 +101,7 @@ export function VehicleNotes() {
             >
                 <CardCarInfo
                     imageUri={vehicleState.image.uri}
-                    onPress={() => navigation.navigate("Vehicle", { vehicleId: vehicleState.id })}
+                    // onPress={() => navigation.navigate("Vehicle", { vehicleId: vehicleState.id })}
                 />
                 <CardAdBanner />
                 <DefaultText
@@ -103,7 +112,8 @@ export function VehicleNotes() {
                     style={{ alignSelf: "center" }}
                 />
                 <FlatList
-                    data={filteredNotes?.length > 0 ? filteredNotes : vehicleState.notes}
+                    data={vehicleState.notes}
+                    // data={filteredNotes?.length > 0 ? filteredNotes : vehicleState.notes}
                     renderItem={({ item }) => (
                         <CardNote
                             key={item.id}
@@ -126,30 +136,24 @@ export function VehicleNotes() {
             />
             <DefaultBottomSheet
                 ref={bottomSheetRef}
-                onFilterResults={setFilteredNotes}
-                notes={vehicleState.notes}
                 options={[
+                    {
+                        iconName: "PencilSimpleLine",
+                        label: "Editar veículo",
+                        onPress: handleEditVehicle
+                    },
+                    {
+                        iconName: "Funnel",
+                        label: "Filtrar",
+                        onPress: () => { }
+                    },
                     {
                         iconName: "Trash",
                         label: "Excluir veículo",
                         onPress: handleDeleteVehicle
                     },
-                    {
-                        iconName: "Funnel",
-                        label: "Filtrar",
-                        onPress: () => {
-                            bottomSheetRef.current?.openFilterScreen();
-                        }
-                    },
-                    {
-                        iconName: "MagnifyingGlass",
-                        label: "Buscar por título",
-                        onPress: () => {
-                            bottomSheetRef.current?.openSearchScreen();
-                        }
-                    },
-                ]}
 
+                ]}
             />
         </SafeAreaView>
     );

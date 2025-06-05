@@ -10,11 +10,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { Image } from "expo-image";
 import { storage } from "../storage/mmkvStorage";
 import uuid from 'react-native-uuid';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Header } from "../components/Header";
 import { VehicleTypes } from "../@types/vehicleTypes";
 import { VehiclesContext, VehiclesContextType } from "../contexts/appContext";
 import { DefaultTextInput } from "../components/DefaultTextInput";
+import { DefaultLoading } from "../components/DefaultLoading";
+import { Toast } from "toastify-react-native";
 
 
 
@@ -59,14 +61,40 @@ export function NewVehicle() {
     const vehicleNicknameMaxLength = 25;
     const mediaLibraryPermission = ImagePicker.useMediaLibraryPermissions()
 
+    const routes = useRoute()
+    const { vehicleId } = routes.params as { vehicleId?: string };
     const navigation = useNavigation()
-    const { vehicles, handleSaveVehicle } = useContext<VehiclesContextType>(VehiclesContext)
+    const { handleSaveVehicle, findById, updateVehicleInfo } = useContext<VehiclesContextType>(VehiclesContext)
 
     const [vehicleType, setVehicleType] = useState<VehicleTypes | null>(null);
     const [isVehicleSelected, setIsVehicleSelected] = useState(false);
     const [selectedImage, setSelectedImage] = useState<InputImageProps>();
     const [vehicleNickname, setVehicleNickname] = useState('');
     const [finishButtonDisabled, setFinishButtonDisabled] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
+
+    function isToEditVehicle() {
+        if (vehicleId) {
+            const res = findById(vehicleId)
+
+            if (!res) {
+                Toast.error("Veículo não encontrado")
+                navigation.goBack();
+                return
+            }
+
+            console.log(res.type)
+
+            setVehicleType(res.type as VehicleTypes);
+            setSelectedImage({
+                fileName: res!.image!.fileName,
+                uri: res!.image!.uri
+            });
+            setVehicleNickname(res?.vehicleNickname || '');
+            setIsVehicleSelected(true);
+            setIsLoading(false)
+        }
+    }
 
     function handleVehicleTypeChange(type: VehicleTypes) {
         setVehicleType(type);
@@ -115,20 +143,39 @@ export function NewVehicle() {
     function handleFinish() {
         const res = handleSaveVehicle(vehicleType!, selectedImage!, vehicleNickname)
         console.log(res)
-        // navigation.navigate(`VehicleNotes_${res.id}`)
     }
+
+    function handleFinishEditing() {
+        let updatedVehicle = {
+            type: vehicleType!,
+            image: selectedImage!,
+            vehicleNickname: vehicleNickname,
+        }
+
+        updateVehicleInfo(vehicleId!, updatedVehicle)
+        Toast.success("Veículo atualizado com sucesso!")
+        navigation.navigate(`VehicleNotes_${vehicleId}`)
+    }
+    useEffect(() => {
+        isToEditVehicle()
+    }, [])
 
     useEffect(() => {
         canFinish()
     }, [selectedImage, isVehicleSelected, vehicleNickname])
+
+    if (isLoading) {
+        return <DefaultLoading />
+
+    }
 
     return (
         <SafeAreaView
             style={styles.safeAreaContainer}
         >
             <Header
-                title="Adicionar veículo"
-                showDrawerMenuIcon={true}
+                title={vehicleId ? 'Editar' : 'Novo veículo'}
+                showDrawerMenuIcon={vehicleId ? false : true}
             />
             <ScrollView
                 style={styles.container}
@@ -182,7 +229,7 @@ export function NewVehicle() {
                         </View>
                     }
                     <DefaultButton
-                        label="Adicionar Imagem"
+                        label={'Selecionar imagem'}
                         iconName="Image"
                         onPress={handleGetImage}
                     />
@@ -229,7 +276,7 @@ export function NewVehicle() {
                     label="Finalizar"
                     iconName="FlagCheckered"
                     disabled={finishButtonDisabled}
-                    onPress={handleFinish}
+                    onPress={vehicleId ? handleFinishEditing : handleFinish}
                 />
             </ScrollView>
         </SafeAreaView>
