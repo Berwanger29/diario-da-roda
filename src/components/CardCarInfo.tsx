@@ -10,13 +10,15 @@ import { VehiclesContext } from "../contexts/appContext";
 import { Vehicle } from "../@types/vehicle";
 import { DefaultLoading } from "./DefaultLoading";
 import { Toast } from "toastify-react-native";
+import { formatCurrency } from "../helpers/formatCurrency";
 
 type Props = {
     imageUri: InputImageProps["uri"];
+    totalAmountSpend?: number;
     onPress?: () => void;
 }
 
-export function CardCarInfo({ imageUri, onPress }: Props) {
+export function CardCarInfo({ imageUri, totalAmountSpend, onPress }: Props) {
 
     const blurHash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
@@ -26,7 +28,7 @@ export function CardCarInfo({ imageUri, onPress }: Props) {
             // activeOpacity={theme.CONSTANTS.activeOpacity}
             // onPress={onPress}
             activeOpacity={1}
-            onPress={()=>{}}
+            onPress={() => { }}
         >
             <View
                 style={styles.imageContiner}
@@ -37,10 +39,16 @@ export function CardCarInfo({ imageUri, onPress }: Props) {
                     style={styles.image}
                 />
             </View>
-            <View
-                style={styles.bar}
-            >
-                <DefaultText
+
+            {
+                totalAmountSpend &&
+                <View
+                    style={styles.bar}
+                >
+                    <DefaultText
+                        text={`${formatCurrency(totalAmountSpend)} gastos`}
+                    />
+                    {/* <DefaultText
                     text="18/19"
                     weight="BOLD"
                 />
@@ -51,8 +59,10 @@ export function CardCarInfo({ imageUri, onPress }: Props) {
                 <DefaultText
                     text="102cv"
                     weight="BOLD"
-                />
-            </View>
+                /> */}
+                </View>
+            }
+
         </TouchableOpacity>
     )
 }

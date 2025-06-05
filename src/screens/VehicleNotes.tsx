@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "../components/Header";
 import { Alert, FlatList, ScrollView, StyleSheet, View } from "react-native";
@@ -31,7 +31,8 @@ export function VehicleNotes() {
     const { vehicleId } = route.params as RouteParams;
 
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
-    const [filteredNotes, setFilteredNotes] = useState<VehicleNote[]>([]);
+    const [totalAmountSpend, setTotalAmountSpend] = useState(0);
+
 
     const bottomSheetRef = useRef<BottomSheet & DefaultBottomSheetRefProps>(null);
 
@@ -75,6 +76,20 @@ export function VehicleNotes() {
         }
     }
 
+    function getTotalAmountSpendFromNotes() {
+        if (vehicleState?.notes) {
+            const notes = vehicleState?.notes;
+
+            const total = notes.reduce((acc, e) => acc + e.price!, 0)
+
+            setTotalAmountSpend(total)
+        }
+    }
+
+    useEffect(() => {
+        getTotalAmountSpendFromNotes()
+    }, [vehicleState]);
+
 
     useFocusEffect(useCallback(() => {
         getVehicle();
@@ -101,7 +116,8 @@ export function VehicleNotes() {
             >
                 <CardCarInfo
                     imageUri={vehicleState.image.uri}
-                    // onPress={() => navigation.navigate("Vehicle", { vehicleId: vehicleState.id })}
+                    totalAmountSpend={totalAmountSpend}
+                // onPress={() => navigation.navigate("Vehicle", { vehicleId: vehicleState.id })}
                 />
                 <CardAdBanner />
                 <DefaultText
@@ -142,11 +158,11 @@ export function VehicleNotes() {
                         label: "Editar veículo",
                         onPress: handleEditVehicle
                     },
-                    {
-                        iconName: "Funnel",
-                        label: "Filtrar",
-                        onPress: () => { }
-                    },
+                    // {
+                    //     iconName: "Funnel",
+                    //     label: "Filtrar",
+                    //     onPress: () => { }
+                    // },
                     {
                         iconName: "Trash",
                         label: "Excluir veículo",

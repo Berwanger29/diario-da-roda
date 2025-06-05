@@ -31,7 +31,7 @@ export function FormNewNote() {
     const [vehicleState, setVehicleState] = useState<Vehicle | null>(null);
     const [noteTitle, setNoteTitle] = useState('');
     const [noteDescription, setNoteDescription] = useState('');
-    const [notePrice, setNotePrice] = useState<number | null>(null);
+    const [notePrice, setNotePrice] = useState<number>(0);
     const [notePriceFormatted, setNotePriceFormatted] = useState('');
 
 
@@ -90,7 +90,7 @@ export function FormNewNote() {
     function fomartedPrice(text: string) {
         const onlyNumbers = text.replace(/\D/g, '');
         if (onlyNumbers === '') {
-            setNotePrice(null);
+            setNotePrice(0);
             setNotePriceFormatted('');
             return;
         }
