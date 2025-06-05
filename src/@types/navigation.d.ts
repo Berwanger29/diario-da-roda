@@ -1,7 +1,9 @@
 export declare global {
   namespace ReactNavigation {
     interface RootParamList {
+      Welcome: undefined;
       Login: undefined;
+      CreateAccount: undefined;
       Account: undefined;
       MyDrawer: {
         screen?: string
@@ -15,7 +17,7 @@ export declare global {
 
       FormNewNote: {
         vehicleId: string,
-        noteId: noteId,
+        noteId?: noteId,
         toEdit?: boolean
       };
       Vehicle: {

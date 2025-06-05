@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Login } from '../screens/Login';
+import { Login } from '../screens/Auth/Login';
 import { FormNewNote } from '../screens/FormNewNote';
 import { MyDrawer } from './MyDrawer';
 import { Note } from '../screens/Note';

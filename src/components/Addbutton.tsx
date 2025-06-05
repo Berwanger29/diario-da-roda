@@ -16,7 +16,7 @@ export function AddButton({ vehicledId }: Props) {
     return (
         <Pressable
             onPress={() => navigation.navigate("FormNewNote", {
-                vehicleId: vehicledId
+                vehicleId: vehicledId,
             })}
             style={{
                 width: circleDimensions,
