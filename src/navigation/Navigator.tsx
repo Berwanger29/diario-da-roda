@@ -1,24 +1,33 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { MyDrawer } from './MyDrawer';
 import { StackScreens } from './Stack';
 import ToastManager from 'toastify-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthStack } from './AuthStack';
+import { getLoginState } from '../helpers/loginStorage';
+import { VehiclesContext } from '../contexts/appContext';
+import { AuthContext } from '../contexts/AuthContext';
+import { DefaultLoading } from '../components/DefaultLoading';
 
 export function Navigator() {
 
+
+    const { isLoggedIn, isLoading } = useContext(AuthContext);
     const insets = useSafeAreaInsets();
-    const [isUserAuthnenticated, setIsUserAuthnenticated] = useState(true);
+
+    if (isLoading) {
+        return <DefaultLoading />;
+    }
 
     return (
         <>
             <NavigationContainer>
                 {
-                    isUserAuthnenticated ?
-                        <AuthStack />
-                        :
+                    isLoggedIn ?
                         <StackScreens />
+                        :
+                        <AuthStack />
                 }
             </NavigationContainer>
             <ToastManager

@@ -4,6 +4,7 @@ export declare global {
       Welcome: undefined;
       Login: undefined;
       CreateAccount: undefined;
+      RecoveryPassword: undefined;
       Account: undefined;
       MyDrawer: {
         screen?: string

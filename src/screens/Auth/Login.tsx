@@ -1,18 +1,27 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { DefaultText } from "../../components/DefaultText";
 import theme from "../../theme/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "../../components/Header";
 import { DefaultTextInput } from "../../components/DefaultTextInput";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { DefaultButton } from "../../components/DefaultButton";
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../contexts/AuthContext";
 
 
 
 export function Login() {
 
+    const navigation = useNavigation()
+    const { login } = useContext(AuthContext)
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    function handleLogin() {
+        login()
+    }
 
     return (
         <SafeAreaView
@@ -53,14 +62,30 @@ export function Login() {
                     autoCorrect={false}
                     returnKeyType="done"
                 />
-                <View 
+
+                <Pressable
+                    onPress={() => navigation.navigate("RecoveryPassword")}
+                >
+                    <DefaultText
+                        text="Esqueci minha senha"
+                        fontSize="S"
+                        weight="BOLD"
+                        style={{
+                            textAlign: "center",
+                            marginTop: theme.MEASURES.PADDING / 2,
+                            color: "#999"
+                        }}
+                    />
+                </Pressable>
+
+                <View
                     style={{
-                        flex:1
+                        flex: 1
                     }}
                 />
                 <DefaultButton
                     label="Entrar"
-                    onPress={() => { }}
+                    onPress={handleLogin}
                 />
             </ScrollView>
         </SafeAreaView>

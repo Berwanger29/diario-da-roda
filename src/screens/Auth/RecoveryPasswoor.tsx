@@ -5,12 +5,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "../../components/Header";
 import { DefaultTextInput } from "../../components/DefaultTextInput";
 import { useState } from "react";
+import { DefaultButton } from "../../components/DefaultButton";
+import { Toast } from "toastify-react-native";
 
 
 
-export function Login() {
+export function RecoveryPassword() {
 
     const [email, setEmail] = useState("");
+
+    function handleRecoveryPassword() {
+        Toast.success("E-mail enviado com sucesso.", "top", 3000)
+    }
 
     return (
         <SafeAreaView
@@ -39,7 +45,17 @@ export function Login() {
                     autoCorrect={false}
                     returnKeyType="next"
                 />
-                
+
+                <View
+                    style={{
+                        flex: 1
+                    }}
+                />
+
+                <DefaultButton
+                    label="Recuperar senha"
+                    onPress={handleRecoveryPassword}
+                />
             </ScrollView>
         </SafeAreaView>
     )
@@ -56,6 +72,6 @@ const styles = StyleSheet.create({
     scrollViewContent: {
         flex: 1,
         padding: theme.MEASURES.PADDING,
-        gap: theme.MEASURES.PADDING /2,
+        gap: theme.MEASURES.PADDING / 2,
     }
 })

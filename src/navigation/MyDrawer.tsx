@@ -39,6 +39,10 @@ export function MyDrawer() {
     }
   }
 
+  function initialRouteName(){
+    
+  }
+
   return (
     <Drawer.Navigator
       initialRouteName='Account'
