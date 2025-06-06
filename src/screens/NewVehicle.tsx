@@ -241,35 +241,6 @@ export function NewVehicle() {
                     value={vehicleNickname}
                 />
 
-                {/* <View
-                    style={styles.inputContainer}
-                >
-                    <DefaultText
-                        text="Apelido do veículo"
-                        weight="MEDIUM"
-                        fontSize="L"
-                        style={styles.inputLabel}
-                    />
-                    <TextInput
-                        style={styles.textInputStyle}
-                        placeholder="Digite o apelido do veículo"
-                        placeholderTextColor={theme.COLORS.DARK_100}
-                        onChangeText={(e) => handleVehicleNicknameChange(e)}
-                        value={vehicleNickname}
-                        maxLength={vehicleNicknameMaxLength}
-                        enterKeyHint="done"
-                        autoCorrect={false}
-                    />
-                    <DefaultText
-                        text={`${vehicleNickname.length}/${vehicleNicknameMaxLength}`}
-                        fontSize="S"
-                        weight="LIGHT"
-                        style={{
-                            alignSelf: 'flex-end',
-                            marginTop: theme.MEASURES.PADDING / 2,
-                        }}
-                    />
-                </View> */}
                 <DefaultButton
                     label="Finalizar"
                     iconName="FlagCheckered"
