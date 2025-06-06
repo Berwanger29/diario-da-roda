@@ -12,6 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DefaultLoading } from './src/components/DefaultLoading';
 import { getLoginState } from './src/helpers/loginStorage';
 import { AuthProvider } from './src/contexts/AuthContext';
+import { Success } from './src/screens/Success';
 
 
 

@@ -6,6 +6,7 @@ import { Note } from '../screens/Note';
 import { Vehicle } from '../screens/Vehicle';
 
 import theme from '../theme/theme';
+import { Success } from '../screens/Success';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -20,19 +21,11 @@ export function StackScreens() {
                 }
             }}
         >
-            {/* <Screen
-                component={Login}
-                name="Login"
-            /> */}
-
             <Screen
                 component={MyDrawer}
                 name='MyDrawer'
             />
-            <Screen
-                component={Vehicle}
-                name='Vehicle'
-            />
+
             <Screen
                 component={Note}
                 name='Note'
@@ -43,6 +36,14 @@ export function StackScreens() {
                 options={{
                     animation: 'default'
                 }}
+            />
+            <Screen
+                component={Vehicle}
+                name='Vehicle'
+            />
+            <Screen
+                name='Success'
+                component={Success}
             />
         </Navigator>
     )

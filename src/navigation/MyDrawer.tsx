@@ -15,6 +15,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { VehiclesContext } from '../contexts/appContext';
+import { DefaultLoading } from '../components/DefaultLoading';
 
 
 const Drawer = createDrawerNavigator();
@@ -22,9 +23,10 @@ const Drawer = createDrawerNavigator();
 
 type IconColorProps = keyof typeof theme["COLORS"]
 
-export function MyDrawer() {
 
-  const { vehicles } = useContext(VehiclesContext)
+export function MyDrawer() {
+  const { vehicles } = useContext(VehiclesContext);
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
   function switchIcon(vehicleType: VehicleTypes, color: string) {
     switch (vehicleType) {
@@ -39,13 +41,22 @@ export function MyDrawer() {
     }
   }
 
-  function initialRouteName(){
-    
+  useEffect(() => {
+    if (vehicles.length === 0) {
+      setInitialRoute("NewVehicle");
+    } else {
+      setInitialRoute(`VehicleNotes_${vehicles[0].id}`);
+    }
+  }, [vehicles]);
+
+  if (!initialRoute) {
+  
+    return <DefaultLoading />;
   }
 
   return (
     <Drawer.Navigator
-      initialRouteName='Account'
+      initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,
         drawerActiveBackgroundColor: theme.COLORS.DARK_100,
@@ -68,28 +79,25 @@ export function MyDrawer() {
           drawerIcon: ({ color }) => (
             <DefaultIcon name='UserCircle' color={color as IconColorProps} size={24} />
           ),
-          drawerItemStyle:{
+          drawerItemStyle: {
             marginBottom: 20,
             borderRadius: 10,
           }
         }}
       />
 
-      {
-        vehicles.map((vehicle) => (
-          <Drawer.Screen
-            key={vehicle.id}
-            name={`VehicleNotes_${vehicle.id}`}
-            component={VehicleNotes}
-            initialParams={{ vehicleId: vehicle.id }}
-            options={{
-              drawerLabel: vehicle.vehicleNickname,
-              drawerIcon: ({ color }) => switchIcon(vehicle.type as VehicleTypes, color),
-            }}
-          />
-        ))
-      }
-      
+      {vehicles.map((vehicle) => (
+        <Drawer.Screen
+          key={vehicle.id}
+          name={`VehicleNotes_${vehicle.id}`}
+          component={VehicleNotes}
+          initialParams={{ vehicleId: vehicle.id }}
+          options={{
+            drawerLabel: vehicle.vehicleNickname,
+            drawerIcon: ({ color }) => switchIcon(vehicle.type as VehicleTypes, color),
+          }}
+        />
+      ))}
 
       <Drawer.Screen
         name="NewVehicle"
@@ -99,7 +107,7 @@ export function MyDrawer() {
           drawerIcon: ({ color }) => (
             <DefaultIcon name='PlusCircle' color={color as IconColorProps} size={24} />
           ),
-          drawerItemStyle:{
+          drawerItemStyle: {
             marginTop: 20,
             borderRadius: 10,
           }
@@ -116,7 +124,6 @@ export function MyDrawer() {
           ),
         }}
       />
-
     </Drawer.Navigator>
   );
 }

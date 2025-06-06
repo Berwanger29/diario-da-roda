@@ -9,26 +9,28 @@ export declare global {
       MyDrawer: {
         screen?: string
       };
-      NewVehicle: {
-        vehicleId?: string
-      };
-      VehicleNotes: {
-        vehicleId: string
-      };
-
       FormNewNote: {
         vehicleId: string,
         noteId?: noteId,
         toEdit?: boolean
       };
-      Vehicle: {
-        vehicleId: string
+      NewVehicle: {
+        vehicleId?: string
       };
       Note: {
         noteId: string,
         vehicleId: string
       };
+      VehicleNotes: {
+        vehicleId: string
+      };
+      Vehicle: {
+        vehicleId: string
+      };
       Settings: undefined;
+      Success: {
+        vehicleId?: string,
+      }
     }
   }
 }

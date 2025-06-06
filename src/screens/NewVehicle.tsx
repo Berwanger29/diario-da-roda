@@ -62,7 +62,7 @@ export function NewVehicle() {
     const mediaLibraryPermission = ImagePicker.useMediaLibraryPermissions()
 
     const routes = useRoute()
-    const { vehicleId } = routes.params as { vehicleId?: string };
+    const vehicleId = (routes?.params as { vehicleId?: string })?.vehicleId ?? null;
     const navigation = useNavigation()
     const { handleSaveVehicle, findById, updateVehicleInfo } = useContext<VehiclesContextType>(VehiclesContext)
 
@@ -142,20 +142,26 @@ export function NewVehicle() {
 
     function handleFinish() {
         const res = handleSaveVehicle(vehicleType!, selectedImage!, vehicleNickname)
-        console.log(res)
+
+        navigation.navigate("Success", {
+            vehicleId: res.id
+        })
     }
 
     function handleFinishEditing() {
-        let updatedVehicle = {
-            type: vehicleType!,
-            image: selectedImage!,
-            vehicleNickname: vehicleNickname,
-        }
+        if (vehicleId) {
+            let updatedVehicle = {
+                type: vehicleType!,
+                image: selectedImage!,
+                vehicleNickname: vehicleNickname,
+            }
 
-        updateVehicleInfo(vehicleId!, updatedVehicle)
-        Toast.success("Veículo atualizado com sucesso!")
-        navigation.navigate(`VehicleNotes_${vehicleId}`)
+            updateVehicleInfo(vehicleId!, updatedVehicle)
+            Toast.success("Veículo atualizado com sucesso!")
+            navigation.navigate(`VehicleNotes_${vehicleId}`)
+        }
     }
+
     useEffect(() => {
         isToEditVehicle()
     }, [])
@@ -164,9 +170,8 @@ export function NewVehicle() {
         canFinish()
     }, [selectedImage, isVehicleSelected, vehicleNickname])
 
-    if (isLoading) {
+    if (isLoading && vehicleId) {
         return <DefaultLoading />
-
     }
 
     return (
