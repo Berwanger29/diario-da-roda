@@ -7,6 +7,8 @@ import { Vehicle } from '../screens/Vehicle';
 
 import theme from '../theme/theme';
 import { Success } from '../screens/Success';
+import { NewVehicle } from '../screens/NewVehicle';
+import { EditVehicle } from '../screens/EditVehicle';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -14,6 +16,8 @@ export function StackScreens() {
     return (
         <Navigator
             initialRouteName='MyDrawer'
+
+
             screenOptions={{
                 headerShown: false,
                 contentStyle: {
@@ -25,10 +29,13 @@ export function StackScreens() {
                 component={MyDrawer}
                 name='MyDrawer'
             />
-
             <Screen
                 component={Note}
                 name='Note'
+            />
+            <Screen
+                name='EditVehicle'
+                component={EditVehicle}
             />
             <Screen
                 component={FormNewNote}

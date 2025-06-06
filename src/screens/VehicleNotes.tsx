@@ -42,12 +42,7 @@ export function VehicleNotes() {
     }
 
     function handleEditVehicle() {
-        navigation.navigate('MyDrawer', {
-            screen: 'NewVehicle',
-            params: {
-                vehicleId: vehicleState!.id
-            }
-        });
+        navigation.navigate("EditVehicle", { vehicleId });
     }
 
     function handleDeleteVehicle() {

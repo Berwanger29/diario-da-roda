@@ -8,12 +8,10 @@ import theme from '../theme/theme';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { NewVehicle } from '../screens/NewVehicle';
 import { DefaultIcon } from '../components/DefaultIcon';
-import { storage } from '../storage/mmkvStorage';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { VehicleTypes } from '../@types/vehicleTypes';
-import { useFocusEffect } from '@react-navigation/native';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {  useContext, useEffect, useState } from 'react';
+import { VehicleTypes } from '../@types/vehicleTypes';
+
 import { VehiclesContext } from '../contexts/appContext';
 import { DefaultLoading } from '../components/DefaultLoading';
 

@@ -9,6 +9,9 @@ export declare global {
       MyDrawer: {
         screen?: string
       };
+      EditVehicle:{
+        vehicleId: string
+      }
       FormNewNote: {
         vehicleId: string,
         noteId?: noteId,
@@ -16,6 +19,7 @@ export declare global {
       };
       NewVehicle: {
         vehicleId?: string
+        toEdit?: boolean
       };
       Note: {
         noteId: string,

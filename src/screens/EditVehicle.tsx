@@ -61,16 +61,16 @@ type RouteParams = {
 };
 
 
-export function NewVehicle() {
+export function EditVehicle() {
 
     const vehicleNicknameMaxLength = 25;
     const mediaLibraryPermission = ImagePicker.useMediaLibraryPermissions()
 
 
     const route = useRoute();
-    const { vehicleId, } = (route.params || {}) as RouteParams;
+    const { vehicleId } = (route.params || {}) as RouteParams;
     const navigation = useNavigation()
-    const { handleSaveVehicle } = useContext<VehiclesContextType>(VehiclesContext)
+    const { handleSaveVehicle, findById, updateVehicleInfo } = useContext<VehiclesContextType>(VehiclesContext)
 
     const [vehicleType, setVehicleType] = useState<VehicleTypes | null>(null);
     const [isVehicleSelected, setIsVehicleSelected] = useState(false);
@@ -79,6 +79,22 @@ export function NewVehicle() {
     const [finishButtonDisabled, setFinishButtonDisabled] = useState(true)
     const [isLoading, setIsLoading] = useState(true)
 
+    function loadVehicleToEdit() {
+        if (!vehicleId) return;
+
+        const vehicle = findById(vehicleId);
+        if (!vehicle) {
+            Toast.error("Veículo não encontrado");
+            navigation.goBack();
+            return;
+        }
+
+        setVehicleType(vehicle.type);
+        setSelectedImage(vehicle.image);
+        setVehicleNickname(vehicle.vehicleNickname || '');
+        setIsVehicleSelected(true);
+        setIsLoading(false);
+    }
 
     function handleVehicleTypeChange(type: VehicleTypes) {
         setVehicleType(type);
@@ -126,15 +142,21 @@ export function NewVehicle() {
         }
     }
 
-    function handleFinish() {
-        if (!vehicleType || !selectedImage || !vehicleNickname) return;
 
-        const res = handleSaveVehicle(vehicleType, selectedImage, vehicleNickname);
-        navigation.navigate("Success", {
-            vehicleId: res.id
-        });
+    function handleFinishEditing() {
+        if (vehicleId) {
+            let updatedVehicle = {
+                type: vehicleType!,
+                image: selectedImage!,
+                vehicleNickname: vehicleNickname,
+            }
+
+            updateVehicleInfo(vehicleId!, updatedVehicle)
+            Toast.success("Veículo atualizado com sucesso!")
+            // navigation.navigate(`VehicleNotes_${vehicleId}`)
+            navigation.goBack()
+        }
     }
-
 
     function handleToggleDrawer() {
         navigation.dispatch(DrawerActions.openDrawer());
@@ -144,7 +166,9 @@ export function NewVehicle() {
     useEffect(() => {
         if (vehicleId) {
             setIsLoading(true);
+            loadVehicleToEdit();
         } else {
+            resetForm();
             setIsLoading(false);
         }
     }, [vehicleId]);
@@ -171,8 +195,9 @@ export function NewVehicle() {
             style={styles.safeAreaContainer}
         >
             <Header
-                title={vehicleId ? 'Editar' : 'Novo veículo'}
-                showDrawerMenuIcon={vehicleId ? false : true}
+                title="Editar"
+                showDrawerMenuIcon={false}
+                variant="secondary"
             />
 
             <ScrollView
@@ -180,7 +205,6 @@ export function NewVehicle() {
                 contentContainerStyle={styles.scrollViewContentContainerStyle}
                 showsVerticalScrollIndicator={false}
             >
-                {/* [X] - tipo de veículo (carro, moto, caminhão) */}
                 <View
                     style={styles.inputContainer}
                 >
@@ -240,41 +264,11 @@ export function NewVehicle() {
                     onChangeText={(e) => handleVehicleNicknameChange(e)}
                     value={vehicleNickname}
                 />
-
-                {/* <View
-                    style={styles.inputContainer}
-                >
-                    <DefaultText
-                        text="Apelido do veículo"
-                        weight="MEDIUM"
-                        fontSize="L"
-                        style={styles.inputLabel}
-                    />
-                    <TextInput
-                        style={styles.textInputStyle}
-                        placeholder="Digite o apelido do veículo"
-                        placeholderTextColor={theme.COLORS.DARK_100}
-                        onChangeText={(e) => handleVehicleNicknameChange(e)}
-                        value={vehicleNickname}
-                        maxLength={vehicleNicknameMaxLength}
-                        enterKeyHint="done"
-                        autoCorrect={false}
-                    />
-                    <DefaultText
-                        text={`${vehicleNickname.length}/${vehicleNicknameMaxLength}`}
-                        fontSize="S"
-                        weight="LIGHT"
-                        style={{
-                            alignSelf: 'flex-end',
-                            marginTop: theme.MEASURES.PADDING / 2,
-                        }}
-                    />
-                </View> */}
                 <DefaultButton
                     label="Finalizar"
                     iconName="FlagCheckered"
                     disabled={finishButtonDisabled}
-                    onPress={handleFinish}
+                    onPress={handleFinishEditing}
                 />
             </ScrollView>
         </SafeAreaView>
@@ -285,6 +279,13 @@ const styles = StyleSheet.create({
     safeAreaContainer: {
         flex: 1,
         backgroundColor: theme.COLORS.DARK,
+    },
+    header: {
+        flexDirection: "row",
+
+        paddingVertical: theme.MEASURES.PADDING / 2,
+        alignItems: "center",
+        justifyContent: "center",
     },
     container: {
         flex: 1,
