@@ -1,5 +1,4 @@
 import { InputImageProps } from "../screens/NewVehicle";
-import { IconName } from "./iconName";
 import { VehicleNote } from "./vehicleNote";
 import { VehicleTypes } from "./vehicleTypes";
 

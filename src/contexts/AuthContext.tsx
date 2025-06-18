@@ -1,19 +1,23 @@
-// context/AuthContext.tsx
 import React, { createContext, useEffect, useState, ReactNode } from 'react';
-import { clearLoginState, getLoginState, saveLoginState } from '../helpers/loginStorage';
-
+import { clearLoginState, getLoginState, getLoginTokens, saveLoginState } from '../helpers/loginStorage';
+import { api } from '../services/axios';
 
 type AuthContextType = {
     isLoggedIn: boolean;
-    login: () => void;
-    logout: () => void;
+    login: (props: LoginProps) => Promise<void>;
+    logout: () => Promise<void>;
     isLoading: boolean;
+};
+
+type LoginProps = {
+    email: string;
+    password: string;
 };
 
 export const AuthContext = createContext<AuthContextType>({
     isLoggedIn: false,
-    login: () => { },
-    logout: () => { },
+    login: async () => { },
+    logout: async () => { },
     isLoading: true,
 });
 
@@ -22,27 +26,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const checkLogin = () => {
-            const logged = getLoginState();
-            setIsLoggedIn(logged);
+        const checkLogin = async () => {
+            const tokens = getLoginTokens();
+            if (tokens) {
+                api.defaults.headers.common['Authorization'] = `Bearer ${tokens.accessToken}`;
+                setIsLoggedIn(true);
+            }
             setIsLoading(false);
         };
         checkLogin();
     }, []);
 
-    const login = () => {
-        saveLoginState(true);
-        setIsLoggedIn(true);
+    const login = async ({ email, password }: LoginProps) => {
+        try {
+            setIsLoading(true);
+            const response = await api.post('/session/', { email, password });
+            console.log(response.data.response);
+            const accessToken = response.data?.response?.session?.access_token;
+            const refreshToken = response.data?.response?.session?.refresh_token;
+
+            if (accessToken && refreshToken) {
+                await saveLoginState({ accessToken, refreshToken });
+                setIsLoggedIn(true);
+            } else {
+                throw new Error("Login inválido");
+            }
+        } catch (err) {
+            console.error(err);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const logout = () => {
-        clearLoginState();
+    const logout = async () => {
+        await clearLoginState();
         setIsLoggedIn(false);
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout, isLoading }
-        }>
+        <AuthContext.Provider value={{ isLoggedIn, login, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

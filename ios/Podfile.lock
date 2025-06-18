@@ -9,7 +9,7 @@ PODS:
   - EXJSONUtils (0.15.0)
   - EXManifests (0.16.5):
     - ExpoModulesCore
-  - Expo (53.0.9):
+  - Expo (53.0.10):
     - DoubleConversion
     - ExpoModulesCore
     - glog
@@ -291,7 +291,7 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (14.1.4):
     - ExpoModulesCore
-  - ExpoModulesCore (2.3.13):
+  - ExpoModulesCore (2.4.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -316,7 +316,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - ExpoSplashScreen (0.30.8):
+  - ExpoSecureStore (14.2.3):
+    - ExpoModulesCore
+  - ExpoSplashScreen (0.30.9):
     - ExpoModulesCore
   - EXUpdatesInterface (1.1.0):
     - ExpoModulesCore
@@ -2143,7 +2145,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNGoogleMobileAds (15.3.0):
+  - RNGoogleMobileAds (15.3.1):
     - DoubleConversion
     - glog
     - Google-Mobile-Ads-SDK (= 12.4.0)
@@ -2451,6 +2453,7 @@ DEPENDENCIES:
   - ExpoImagePicker (from `../node_modules/expo-image-picker/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoSecureStore (from `../node_modules/expo-secure-store/ios`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
@@ -2586,6 +2589,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
+  ExpoSecureStore:
+    :path: "../node_modules/expo-secure-store/ios"
   ExpoSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
   EXUpdatesInterface:
@@ -2753,7 +2758,7 @@ SPEC CHECKSUMS:
   EXImageLoader: ab4fcf9240cf3636a83c00e3fc5229d692899428
   EXJSONUtils: 1d3e4590438c3ee593684186007028a14b3686cd
   EXManifests: 75cba7539b60676be1911d024252a11b846085ed
-  Expo: 9e3bcf55954285f2808c19162be6ea7a02760afe
+  Expo: f3ffe4174b8c2a08fc2bf50cb806fe2b65a07f33
   expo-dev-client: b32e7e9c0a420a5256e38b12e8eebbf14a7031ed
   expo-dev-launcher: 0affc6b0ba769c90114b4d4bb151225c36242f66
   expo-dev-menu: b40a553476891fd0dc1d2499abf591bdd2062cfa
@@ -2765,8 +2770,9 @@ SPEC CHECKSUMS:
   ExpoImage: ef8b25fddd3613a0bbdb2936d0583bc6588197dd
   ExpoImagePicker: d2fff488a0738343a3cc21e98544ee9feafaa0e6
   ExpoKeepAwake: e8dedc115d9f6f24b153ccd2d1d8efcdfd68a527
-  ExpoModulesCore: 7d3df5142e9446b063d8ae8ace4b6e27a1aa2928
-  ExpoSplashScreen: c39151354ff0fa6d0f5e7dde07a234abd5550e69
+  ExpoModulesCore: 4f1efd2360fd016b3ab7f13c9983320412208976
+  ExpoSecureStore: 3148869ad24ab94f9e0c5777c7941d7a37d60399
+  ExpoSplashScreen: 37e2fd371d4b93215f86a81d8cad3e7b69287e42
   EXUpdatesInterface: 64f35449b8ef89ce08cdd8952a4d119b5de6821d
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 84b955f7b4da8b895faf5946f73748267347c975
@@ -2845,7 +2851,7 @@ SPEC CHECKSUMS:
   ReactCodegen: aea17732a7f6a3169e3b2800c58dc12034f874f9
   ReactCommon: 35a5629d7159876dd048c63751eaeb3aa3a6a53b
   RNGestureHandler: 85b0463dbfed54eaba4360e31c0aa1a0fe83a6a6
-  RNGoogleMobileAds: 1b977f7342feb8508ee47d6b3ca181a75ecb3a77
+  RNGoogleMobileAds: bde43128f55d604b0ba9b0b59b0a21053cade0f2
   RNReanimated: 7b926938d4190114e5848b5b022d83dbc2c0fe2c
   RNScreens: 4ada1709be95c3a4bf1f885378262ceadd9cc939
   RNSVG: 1fa61293cb54a97d8ee3b182d2fb60443edcdf69

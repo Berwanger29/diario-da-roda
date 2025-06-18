@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { DefaultText } from "../../components/DefaultText";
 import theme from "../../theme/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import { DefaultButton } from "../../components/DefaultButton";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../contexts/AuthContext";
+import { api } from "../../services/axios";
 
 
 
@@ -18,10 +19,20 @@ export function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false)
 
-    function handleLogin() {
-        login()
+    async function handleLogin() {
+        try {
+            setIsLoading(true);
+            await login({ email, password });
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Erro", `${error}`);
+        } finally {
+            setIsLoading(false);
+        }
     }
+
 
     return (
         <SafeAreaView
@@ -86,6 +97,7 @@ export function Login() {
                 <DefaultButton
                     label="Entrar"
                     onPress={handleLogin}
+                    disabled={isLoading}
                 />
             </ScrollView>
         </SafeAreaView>

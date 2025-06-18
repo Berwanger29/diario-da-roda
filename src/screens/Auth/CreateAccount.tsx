@@ -1,11 +1,12 @@
 import { ScrollView, StyleSheet, View } from "react-native";
-import { DefaultText } from "../../components/DefaultText";
 import theme from "../../theme/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "../../components/Header";
 import { DefaultTextInput } from "../../components/DefaultTextInput";
 import { useState } from "react";
 import { DefaultButton } from "../../components/DefaultButton";
+import { Toast } from "toastify-react-native";
+import { api } from "../../services/axios";
 
 
 
@@ -14,9 +15,30 @@ export function CreateAccount() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    function handleCreateAccount() {
-        console.log("Criar conta")
+    async function handleCreateAccount() {
+        try {
+            if (password !== confirmPassword) {
+                Toast.error("As senhas não conferem");
+                return;
+            }
+            setIsLoading(true);
+            const response = await api.post("/users/", {
+                email,
+                password,
+                confirmPassword
+            })
+
+            if (response.status === 201) {
+                Toast.success("Verifique seu email para ativar sua conta");
+            }
+
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -77,6 +99,8 @@ export function CreateAccount() {
                 <DefaultButton
                     label="Entrar"
                     onPress={handleCreateAccount}
+                    disabled={isLoading}
+                    
                 />
             </ScrollView>
         </SafeAreaView>
