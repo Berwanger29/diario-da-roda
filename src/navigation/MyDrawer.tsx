@@ -9,11 +9,12 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { NewVehicle } from '../screens/NewVehicle';
 import { DefaultIcon } from '../components/DefaultIcon';
 
-import {  useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { VehicleTypes } from '../@types/vehicleTypes';
 
 import { VehiclesContext } from '../contexts/appContext';
 import { DefaultLoading } from '../components/DefaultLoading';
+import { getVehicles } from '../services/vehicleService';
 
 
 const Drawer = createDrawerNavigator();
@@ -23,8 +24,20 @@ type IconColorProps = keyof typeof theme["COLORS"]
 
 
 export function MyDrawer() {
-  const { vehicles } = useContext(VehiclesContext);
+  const { vehicles, setVehicles } = useContext(VehiclesContext);
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
+
+  async function getAllVehicles() {
+    const { data } = await getVehicles()
+    setVehicles(data);
+    if (data.length === 0) {
+      setInitialRoute("NewVehicle");
+      return;
+    }
+
+    setInitialRoute(`VehicleNotes_${data[0].id}`);
+
+  }
 
   function switchIcon(vehicleType: VehicleTypes, color: string) {
     switch (vehicleType) {
@@ -40,20 +53,24 @@ export function MyDrawer() {
   }
 
   useEffect(() => {
-    if (vehicles.length === 0) {
-      setInitialRoute("NewVehicle");
-    } else {
-      setInitialRoute(`VehicleNotes_${vehicles[0].id}`);
-    }
-  }, [vehicles]);
+    getAllVehicles();
+  }, []);
+
+  // useEffect(() => {
+  //   if (vehicles.length === 0) {
+  //     setInitialRoute("NewVehicle");
+  //   } else {
+  //     setInitialRoute(`VehicleNotes_${vehicles[0].id}`);
+  //   }
+  // }, [vehicles]);
 
   if (!initialRoute) {
-  
     return <DefaultLoading />;
   }
 
   return (
     <Drawer.Navigator
+      key={initialRoute}
       initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,

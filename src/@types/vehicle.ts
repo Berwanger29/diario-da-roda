@@ -10,3 +10,9 @@ export type Vehicle = {
     image: InputImageProps;
     notes:VehicleNote[]
 }
+
+export type CreateVehicleSchemaDTO = {
+    type: VehicleTypes;
+    vehicleNickname: string;
+    image: InputImageProps;
+}

@@ -11,6 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 export type VehiclesContextType = {
     vehicles: Vehicle[];
+    setVehicles: React.Dispatch<React.SetStateAction<Vehicle[]>>;
     handleSaveVehicle: (type: VehicleTypes, image: InputImageProps, nickname: string) => void;
     retrieveVehicles: () => void;
     findById: (vehicleId: string) => Vehicle | null;
@@ -35,6 +36,9 @@ export type VehiclesContextType = {
 
 const defaultContext: VehiclesContextType = {
     vehicles: [],
+    setVehicles: () => {
+        console.warn('setVehicles called without provider; this is a no-op.');
+    },
     handleSaveVehicle: (type: VehicleTypes, image: InputImageProps, nickname: string) => {
         console.warn('handleSaveVehicle called without provider; this is a no-op.');
     },
@@ -301,6 +305,7 @@ export function VehiclesProvider({ children }: { children: ReactNode }) {
     return (
         <VehiclesContext.Provider value={{
             vehicles,
+            setVehicles,
             handleSaveVehicle,
             retrieveVehicles,
             findById,
